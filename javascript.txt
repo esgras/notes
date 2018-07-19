@@ -1,0 +1,218 @@
+async - делает подгрузку скриптов асинхронной (параллельной) 
+defer - сохраняет порядок загрузки скриптов, скприты грузяться после отработки браузером HTML
+
+
+async - скрипты не тормозят выполнения DOM, выполняться сразу же как только подгрузяться
+defer - скрипты идут в порядке в котором указаны в документе
+
+<script src="" async defer></script> -- считаеться async
+
+document.body.appendChild(document.createElement('script')) -- считаеться async скриптом
+если нужно его сделать не асинхронным то нужно свойству async = false
+
+<script></script> -- инлайн скрипты на которые не действуют атрибуты async, defer
+
+function addScript(src) {
+	var script = document.createElement('script');
+	script.src = src;
+	script.async = false; //теперь скрипт defer
+	document.body.appendChild(src);
+}
+
+<< n - аналогично умножениею на 2 в степени n
+>> n - аналогично целочисленному делению на 2 в степени n
+
+| & ^ 	у побитовых операторов приоритет ниже чем у ==
+битовая маска - число до 5 операци (32) в сумме
+Perm1 | Perm2 -- добавить права
+Perms & Perm1 -- проверка наличия прав
+5.1 ^ 0 - быстрый floor
+if (~n) {} - проверка на n == -1
+
+new Array(5).join(str) -- продублировать строку str 5 раз
+arr.split(delimiter, number) -- вернет number элементов из разбивки
+
+arr.splice(offset, countToReplace, replacement) -- вставит с позици offset replacement вместо countToReplace элементов
+при это можно задать несколько элементов которые вставит
+var arr = [1, 2, 3, 4, 5];
+var arr = 2 arr.splice(3, 0, 'a', 'b', 'c');
+массив теперь 1, 2, 3, a, b, c, 4, 5
+
+php в отличие если передать 4-м параметром массив вставляет их по одному, так как там нет возоможности задавать кучу элементов в методе
+пример
+/* PHP */
+$arr = range(1, 5);
+array_splice($arr, 3, 0, ['a', 'b', 'c']); - 3, 0, a, b, c
+что бы вставить массив надо 
+array_splice($arr, 3, 0, [['a', 'b', 'c']); - 3, 0, [a, b, c]
+/* PHP */
+
+arr.reverse()
+arr.concat(a1, a2, ..., an) -- добавить новые элементы в конец массива
+
+lastIndexOf(el, fromWhereStart) -- если задан 2-й параметр то работает на подобоии indexOf только двигаеться в другую сторону
+пример
+'Hello World'.lastIndexOf('o', 6) -- 4
+
+Object.keys(obj) -- вернет массив ключей
+
+Object.defineProperty(obj, prop, descriptor)
+obj - объект где объявляем свойство
+prop - свойство которое объявляем
+descriptor - объект описывающий поведения свойства
+descriptor имеет свойства
+	value - значение свойства по умолчанию undefined
+	writable - значение свойства можно менять, по умолчанию undefined
+	configurable - если true, то свойство можно удалять, и в дальнейшем менять через Object.defineProperty. По умолчанию false
+	enumerable - если true, то свойство просматриваеться в for .. in метода Object.keys(obj). По умолчанию false
+	get - геттер, по умолчанию undefined
+	set - сеттер, по умолчанию undfined
+
+	запрещено одновременно указывать value и get\set, и writable при get\set
+
+Object.defineProperties(obj, properties) -- то же только задаем объект новых свойств
+Object.getOwnPropertyNames(obj) -- аналог array_keys
+Object.getOwnPropertyDescriptor(obj, prop) - вернет объект descriptor через который можно влиять на свойства
+
+obj.hasOwnProperty(prop) -- вернет true если свойство принадлежит самому объекту
+
+Object.create(null) -- создает объект с прототипом null, т.е. объект без прототипа
+
+document.elementFromPoint(clientX, clientY)
+element.compareDocumentPosition(elementA) возращает значения
+	
+	16 - element содержит elementA
+	8 - elementA содержит element
+	4 - element перед elementA
+	2 - elementA перед element
+	1 - в разных окнах
+	0 - один и тот же элемент
+
+elem.contains(elemA)
+elem.matches(css)
+elem.closest(css) -- проверяет что элемент, или любой из его прямых потомков соответсвует селектору
+elem.removeChild(el)
+elem.replaceChild(elToInsert, elToReplace)
+elem.cloneNode(withChildren=false)
+
+
+
+event.type
+event.phase
+event.target
+event.relatedTarget
+event.currentTarget
+event.cancelable
+event.bubles
+event.clientX
+event.clientY
+event.pageX
+event.pageY
+event.which
+event.shiftKey
+event.altKey
+event.ctrlKey
+event.metaKey
+
+Focus\Blur - не всплывают, но у них есть аналог Focusin\Focusout уже поддерживаються в Mozilla)
+onerror - не всплывает
+onselectstart - при начале выделения текста - double click - shift + click ... //всплывает, но часто e.target - textNode
+	проверка на делегирование if (e.target.parentNode.closest('TAG'))
+
+DOMContentLoaded -- выполняеться после построения HTML дерева, ждет все скрипты кроме async и defer
+
+при движении колесика есть событие
+wheel
+	e.deltaY < 0 - если крутим от себя
+	e.deltaY > 0 - если крутим на себя
+
+var regExp = new RegExp(template, flags);
+	или
+var regExp = /шаблон/gui;  -- так лучше поскольку не нужно экранировать каждую \
+
+regexp.test(str) -- проверяет что есть хоть одно вхождение регулярки в строке test
+str.search(regexp) -- ищет первое вхождение regexp в строке str -- возвращает -1 или позицию
+str.replace(regexp, replacement) - заменяет шаблон на replacement, можно применять карманы
+	var link = link.replace(pattern, '$1'); - заменяеть в строке шаблон на 1-й карман
+
+если шаблон без флага g - делает замену 1-му совпадению, иначе всем совпадениям
+
+
+getOwnPropertyNames()
+
+var obj2 = Object.create(obj) -- создает новый объект который будет прототипно отнаследован от obj
+т.е obj2 -- пустой объект но с ссылкой на obj, и если обращаться к нему через свойства obj то на get будут получаться значения от туда
+Пример
+
+function change(obj) {
+    obj = Object.create(obj);    
+}
+здесь obj -- сперва ссылка на объект, если его менять то и внешний объект меняться, но если воспользоваться Object.create, то внутри функции можно безболезнено метья obj, так как это уже другой объект
+
+Вызов obj instanceof Constructor возвращает true, если объект принадлежит классу Constructor или классу, наследующему от него.
+Object.assign({}, objectToClone) -- создает не глубокую копию
+
+
+moment.js
+
+	var d = moment() -- создать объект
+	var d = moment('2017-02-10', 'YYYY-MM-DD') -- создать по дате
+	d.add(1, 'days') --- сместиться вперед
+	d.substract(1, 'days') -- сместиться назад
+	d.month() | d.day() | d.year()
+	d.format('MMMM YYYY') -- форматирование к тексту
+	d.isSameOrBefore($moment(), 'day')
+	d.isSame($moment(), 'day
+
+Promise -- обещания, способо получить контроль над асинхронным кодом
+
+let promise = new Promise((resolve, reject) => {
+	//todo Асинхронный код
+	//Здесь мы выполняем весь асинхронный код
+	//И в случае успеха вызываем resolve(data) в который передаем нужные данные
+	//В случае ошибки вызываем reject(error) в который передаем ошибку
+
+	if (success) {
+		resolve(result);
+	} else {
+		reject(error);
+	}
+});
+
+promise.then(successFunction(data){}, errorHandler(error)) -- и вешаем обработчик на результат или ошибку
+
+Date -- по умолчанию создает объект по timestamp (в мс) а при выводе показывает время с учетом локли
+для UTC времени есть методы с UTC приставкой getUTCHours()
+d.getTimezoneOffset() -- показывает смещение в минутах от UTC времени при этом если пояса +UTC вернет отрицательное значение и наоборот
+d.getTime() == Date.now() == +(new Date)
+Date -- месяц отсчет с 0, date.getDay() -- вернет для воскресенья 0
+
+new Intl.DateTimeFormat('en', {year: "numeric", month: "long"}).format(this.date) -- вернет строку времени с учетом локали и настройками (как бы замена date() в php)1
+
+new Date(Date.UTC(years, months, day, hours, minutes, seconds, miliseconds)) -- создаст UTC date
+
+let xhr = new XMLHttpRequest();
+xhr.open('GET', url, async = true);
+
+xhr.setRequestHeader('Content-Type', 'text/html');
+xhr.getResponseHeader('Content-Type');
+
+xhr.abort()
+xhr.timeout = 3000; //ms
+xhr.readyState
+
+есть отдельные события
+xhr.onreadystatechange -- основное (изначальное) при xhr.readyState == 4 -- запрос завершен
+xhr.onabort -- событие которое отрабатывает при ручном xhr.abort() можно вешать свой обработчик
+xhr.ontimeout -- в случае timeout
+
+xhr.statusText -- OK
+xhr.status -- 200
+xhr.responseText -- ответ от сервера
+
+__proto__ -- ссылка для объетка, прототип - резервное хранилище
+
+Arr.find(callback[, thisArg]) -- возвращает первый элемент удовлятворящий callback или undefined
+
+
+let obj2 = JSON.parse(JSON.stringify(obj))  -- создать глубокую копию

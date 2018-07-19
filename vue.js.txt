@@ -1,0 +1,542 @@
+var app = new Vue({
+	el: '#element',
+	data: {
+		message: 'Some Data',
+		text: 'Hello, World!!!'
+	},
+
+	methods: {
+		handler: function() {
+			this.message = 'Hello, World'; //здесь через this доступ к свойствам data
+		}
+	}
+
+	mounted() { //функция на хуке выполняемом после загрузки страницы новый синтаксис для функций объектов
+
+	}
+})
+
+через app можно обращаться к app.message / app.text
+
+свойства объекта доступные через $
+
+app.$el
+app.$data
+
+через $ идет обращение к свойствам и методам Vue
+$app.$data
+this.$data
+
+но 
+this.message
+
+контролера нету, логика должны быть реализована между хуками
+
+Vue.component('todo-list', {
+	props: ['prop'], // свойстав которые можно биндить
+	template: '<li>{{ prop.text }}</li>'
+});
+
+<todo-list prop="elem"></todo-list>
+
+В template создаваемом в компоненте так же можно вешать vue свойства
+
+в Components можно задавать Data через метод
+
+data: function() {
+	return {
+		isVisible: true
+	};
+},
+
+$emit('event') -- trigger event в vue.js можно запускать любое событие и ловит на родителе
+пример
+
+$on('event', callback) --    повешать на Vue обработчик на какое-то пользовательское событие
+
+
+
+<todo-list>Some Text</todo-list> //текст между тегами можно вывести в шаблоне как <slot></slot>
+
+<ol>
+	<todo-list v-for="item in collection" v-bind:prop="item"></todo-list>
+</ol>
+
+collection - вбить в data
+
+Vue.config.devtools = true; -- включить dev-mode
+
+
+data - данные которые доступны в этом куске
+
+v-model
+
+v-for="elem in elements"
+v-if
+
+v-text="elem"
+v-on:click="handler"
+v-on:keyup="keyupHandler"
+v-on аналог @
+v-on:click == @click
+v-bind -- биндит атрибут
+	v-bind:title="title_variable"
+	:href="link_variable" -- short syntax for v-bind
+
+{{ text }} // просто текст, не html
+
+
+{{ expresion ? 'True' : 'False'}} // можно вбивать js выражения
+
+что бы вывести html нужно использовать
+	v-html="variable"
+
+интерполяция -- привязка может быть односторонней
+v-once -- в этом блоке значение выводимое не будет меняться при изминении значения переменной
+
+можно сделать фильтры на подобии твига
+
+{{ test ? 'yes' : 'no' | capitalize}}
+
+и в конструкторе
+
+new Vue({
+//...
+	filters: {
+		capitalize(str) {
+			return str.toUpperCase();
+		}
+	}
+})
+
+{{ message | filterA | filterB }} -- можно использовать несколько фильтров последовательно
+v-something -- директива, почти все директивы могут принимать 1 значение
+
+Модификаторы - это специальные постфиксы, перед которыми ставится точка. Модификаторы указывают на специфическую привязку директивы.
+<form v-on:submit.prevent="onSubmit"></form> -- здесь в обработчике сперва вызовиться модификатор e.preventDefault()
+
+можно на view передавать высчитанные значения
+
+<p>Computed reversed message: "{{ reversedMessage }}"</p>
+
+по умолчанию в рассчитанных значениях работает кеширование
+
+computed: {
+	// рассчитанный геттер (getter)
+	reversedMessage: function () {
+		// `this` указывает на текущий экземпляр vm 
+		return this.message.split('').reverse().join('')
+	}
+}
+
+<template slot="header"></template>  -- в шаблоне компонента можно обращаться 
+<slot name="header"></slot>
+
+Here is some text  -- все что осталось    <slot></slot> до следующего копонента с template с именем
+
+<slot>SOME DATE</slot> -- если ничего не передано возмет между тегами
+
+inline-template
+в компоненте можно указать inline-template тогда не нужно в объекте указывать template, шаблоном будет все между тегами
+
+<progress-view  inline-template>
+  <div>
+      <h1>Your progress is {{completionRate}}</h1> // completionRate -- обращение из компонента
+      <button @click="completionRate += 10">Update Route</button>
+  </div>
+</progress-view>
+
+Vue.component('progress-view', {
+    data() {
+        return {completionRate: 50};
+    }
+});
+
+
+
+
+
+
+Vue.component('tag-name', {
+	data() {
+		return {
+			template: 'Temple'
+		};
+	}
+})
+
+можно регистрировать компонент в переменную и потом привязывать в тег
+var templateComponent = Vue.extend({
+	data() {
+		return {
+			template: 'Temple'
+		};
+	},
+	template: '<div>{{template}}</div>'
+})
+Vue.component('template-component', templateComponent);
+
+и в разметке
+<template-component></template-component>
+
+
+@keyup.enter -- при нажатии на Enter
+
+
+Vue.js позволяет передавать в обработчики свои аргументы, а так же ловит в глобальные (для себя) переменные некоторые важные аргументы
+пример
+@click="counter(3, $event)" -- $event глобаные для Vue.js
+
+в Vue.js доступны шорткоды для вписывания поведения в хендлер
+например
+@click.stop.prevent -- здесь к хендлеру автоматически добавляеться stopPropagation() preventDefault()
+
+модификаторые событий доступны в доке например
+.ctrl
+.alt
+.shift
+.meta
+
+
+watch -- свойтсво Vue объекта которой можно настроить на выполнение методов при изминении значения какой-то из моделей
+
+watch: {
+count: function() {
+  var v = this;
+  console.log('Watch called');
+  setTimeout(function() {
+      console.log("CHANGED");
+      v.count++;
+  }, 500);
+}
+
+при этом если внутри этого хендлера меняеться свойство он будет запускать сам себя
+
+можно задавать свойство класс в шаблоне через Vue
+для этого нужно значение класса передавать в виде объекта
+где ключ - какой класс применить, значение - флаг применять ли
+
+<div class="demo"  @click="attachGreen = !attachGreen" :class="{green: attachGreen}"></div>
+
+если классов несоколько удобнее их выносить в data или  computed и вычисленную переменную отдавать в шаблон
+
+computed: {
+	divClasses: function() {
+	    return {
+	        red: this.attachRed,
+	        blue: !this.attachRed
+    };
+}
+<div class="demo" @click="attachRed = !attachRed" :class="divClasses"></div>
+а еще класс можно вписать через модель или напрямую
+:class="'red'"
+а еще можно массивом который Vue вычислит сам)
+:class="['red', {green: attachGreen}]" -- Vue здесь делает merge
+
+style тоже можно менять динамически передавая объект
+array синтакс здесь работает так же как и для класса
+пример:
+
+computed: {
+    myStyle: function() {
+        return {
+            width: this.width + 'px',
+            backgroundColor: this.color
+        };
+    }
+}
+
+<div class="demo" :style="[{width: '200px'}, myStyle]"></div>
+
+<input type="text" id="color" v-model="color">
+<input type="text" id="width" v-model="width">
+
+v-show -- отображать ли
+
+<template></template> -- псевдо тег HTML контейнер для разметки, при вставке в html он исчизает, вставляе свое содержимое
+
+v-for="(value, key, index) in object" -- если на v-for передать объект то он пробежит по ключам, при этом в key - ключ а в index - номер ключа
+v-for="i in 20" -- присваеват i значения в переборе от 1 до 20
+v-for -- можно испльзовать и для хэша - {prop: val}
+:key -- в цикле позволяет задавать смещение по ключу
+
+v-if="condition" -- работает в паре
+v-else-if
+v-else
+
+v-pre -- выводить пустой контент без преобразования
+
+можно создать несколько объектов Vue
+и получать доступ к их свойствам через замыкания
+а именно к свойствам из data и methods
+
+app.title -- свойство доступно через прокси (get + set методы)
+app.$data.title -- тоже что и выше
+
+this.$refs.myElement -- обращению к элементу из ссылки
+<div id='#my' ref='myElement'></div> -- элемент к которому можно ссылаться из Vue.js
+
+var $vm1 = new Vue({});
+
+$vm1.mount('#app'); -- там можно подгрузить динамически элемент для Vue | вместо el: '#app'
+
+var vm2 = new Vue({   // создание
+    template: '<h2>Hello, Vue2</h2>'
+});
+vm2.$mount(); //инициализация
+
+document.querySelector('#app2').append(vm2.$el); //появление на странице
+
+Vue Lifecycle
+
+beforeCreate() -> created() -> beforeMount() -> mounted() -> beforeUpdate() -> updated() -> beforeDestroy() -> destroyed()
+
+this.$destroy() -- уничтожить экземпляр Vue
+после уничтожения экземпляра, HTML который Vue добавил все так же находиться в DOM
+но больше нельзя получить доступка в объекту Vue, обработчики событий не работают и т.д.
+
+Vue.component() -- регестрирует компонент глобально доступен для всех экземпляров Vue
+
+что бы задать только для одного экземпляра надо создать объект компонента
+var comp = {
+	'template': '<h2>My Component</h2>'
+};
+и использовать свойство components экземпляра Vue.js
+var app1 = new Vue({
+	el: '#app1',
+	components: {
+		comp: comp
+	}
+});
+
+компонент должен иметь ОДИН корневой элемент т.е
+<template>
+	<h1>Hello, Component</h1>
+	<p>Some Text</p>
+</template>
+выдаст ошибку что бы ее не было надо завернуть все в один элемент
+<template>
+	<div>
+		<h1>Hello, Component</h1>
+		<p>Some Text</p>
+	</div>
+</template>
+без ошибок
+
+style scoped -- применить только к стилям компонента
+
+is='my-component' -- сделает аналогично
+<my-component></my-component>f
+
+vue работает некоректно с некоторыми блочными тегами для Root элемента, поэтому в компонентах 
+желательно оборачивать в рутовский элемент тегом div (template не подходит)
+
+у компонента props и data -- делят одинаковые ключи, тоесть
+props: ['name'],
+data() {
+	return {'name': ''};
+}
+даст ошибку
+
+props можно задавать параметры
+
+комуникация от родителя к потомку происходит через события:
+	На родителе возникает событие которое ловит потомок. Он его обрабатывать и генерирует событие на которое подписан родитель через this.$emit('event')
+	
+для того что бы была комуникация вплоть до корневого рута нужно
+window.Event = new Vue();
+
+
+где-то в потомке
+Event.$emmit('someEvent');
+
+и в приложении
+created() {
+	Event.$on('someEvent', callback)
+}
+
+<ul>
+  <li v-for="item in shoppingItems" :key="item.name"> -- перебор по ключу item.name 
+    {{ item.name }} - {{ item.price }}
+  </li>
+</ul>
+
+
+<check-filter v-for="genre in genres" :title="genre"  @coolf="coolf"></check-filter>
+внутри компонента на его шаблоне весит событие и что бы в родители ловить обработку нужно ставить обработчик на разметку этого (дочернего компонента)
+ 'movie-filter': {
+            methods: {
+               checkedFilter: function() {
+                    console.log('Filter Checked Handler')
+                },               
+            },
+            template: `<div id="movie-filter" >
+                                        <div class="filter-group">
+                                             <check-filter v-for="genre in genres" :title="genre"  @check-filter="checkedFilter"></check-filter>
+                                       </div>                                       
+                                </div>`,
+            components: {
+                'check-filter': {
+                    methods: {
+                        checkFilter: function() {                            
+                            this.$emit('check-filter');
+                        },
+                       
+                    },                    
+                    template: `<div :class="['check-filter', {active: checked}]" @click="checkFilter" @click="cool">
+                                            <span class="checkbox"></span>
+                                            <span class="check-filter-title">{{ title }}</span>
+                                    </div>`
+                }
+            }
+        }
+    }
+
+
+Vuex -- единое место управления приложением, данные и состояния лучше передавать через него
+ 
+store/index.js
+import Vue from 'vue';
+import Vuex from 'vuex';
+
+Vue.use(Vuex);
+
+export default new Vuex.Store({
+    state: {
+        count: 0
+    }
+});
+
+main.js
+import store './store/index.js'
+
+new Vue({
+    ....
+    store: store
+    ....
+})
+
+в Vuex можно хранить состояния - данные, мутации (midleware)
+
+
+import store from './store' -- store объект Vuex
+
+store.replaceState(newState) -- изменить состояние приложения, нужно использовать только в старте приложения
+
+Vuex getters
+new Vuex.store({
+	.......
+	getters: {
+        createWorkDayLink(state) {
+            return state.createWorkDayLink;
+        }
+    }
+})
+
+
+и 
+
+в Vue обычному шаблону в HTML (не template а именно в .html файле) нельзя навешать событие с camelcase именем (обработчик не распознается)
+
+animation hooks
+если элемент обернуть в <transition @enter="enter"><vl id="cool"></div></transition> -- то будет доступ к хукам анимации
+т. е. можно будет делать что-то перед появлением исчезновением элемента
+
+
+если нужно коммуникация родителя с кем-то из потомков в одной колекции например v-for
+можно:
+	1) props -- передавать на вход колекцию содержащую id для каждого элемента
+		<li v-for="item in items" :data="item"></li> //и в item заталкиваем нужное через computed
+	2)
+		<li v-for="item in items" ref="myCollection"></li> -- теперь в элементе в $refs['myCollection'] -- есть колекция элементов
+
+получить доступ к оригенальному DOM событию можно через $event
+
+<li v-for="event in events" :class="event.type" @contextmenu.prevent.stop="contextEvent(event, $event)">{{ event.description }}</li> -- 
+в event элемент из выборки в $event DOM событие
+
+
+Vue -от компонента можно стучаться к родителю через $parent
+
+
+По умолчанию Vue автоматические не перерисовывает элементы связанные с масивами при их изминнении если не было изминений в DOM
+что бы это сработало нужно пользоваться
+Vue.set();
+
+Vue.set(data.shoppingItems, 2, {price: 10, name: 'pineapple'});
+
+аналогично
+data.shoppingItems[2] = {price: 10, name: 'pineapple'}; -- но при этом будет мгновенный рендеринг
+
+аналогичного можно добиться через splice
+data.shoppingItems.splice(2, 1, {price: 10, name: 'pineapple'});
+
+для коректного изминения длины массива тоже лучше использовать splice
+
+Router основы
+
+router/index.js -- файл роута
+
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+
+Vue.use(VueRouter);
+
+import Bar from '../components/Bar.vue'
+import Foo from '../components/Foo.vue'
+
+const router = new VueRouter({
+    routes: [
+        {
+            path: '/',
+            component: Bar,
+            name: 'bar'
+        },
+        {
+            path: '/foo',
+            component: Foo,
+            name: 'foo'
+        }
+    ]
+});
+
+export default router;
+
+main.js
+
+import router from './router'
+
+new Vue({
+  el: '#app',
+  ....
+  router -- монтируем роутер
+})
+
+и теперь в компонентах можно использовать теги
+<router-link to='/path'>Ссылка на роут</router-link>
+
+<router-view>То что выведет компонент отвечающий за роут</router-view>
+
+Vue Select
+
+npm i vue-select
+
+arr.splice -- единственно верный способ изменить значения в массиве данных 
+
+Lifecicly Hooks -- хуки жизненного цикла
+если элемент появляеться можно использовать
+
+<transition @enter="enter" @leave="leave">
+  <div v-if="visible">Hello, Text</div>
+</transition>
+
+здесь
+ enter -- будет метод который отрабатывает при появлении элемента
+ leave -- метод который отрабатывает при скрытии элемента
+ updated -- будет отрабатывать при изминении чего-то в DOM, 
+            тоесть например в элементе через v-for какие-то подэлементы вставляються - отработает updated
+            или меняються координаты заданные через style тоже отработает updated
+
+ фактические enter запускает updated -- а в нем каждый раз меняя можно запускать кучу обновлений
+
+ this.$set(this, 'events', events); -- аналогично Vue.set(this, 'events', events) -- установить переменную this.events

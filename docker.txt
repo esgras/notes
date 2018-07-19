@@ -1,0 +1,18 @@
+docker ps -a -q -- список контейнеров
+docker images -- список образов
+docker stop $(docker ps -aq) -- остановить все контейнеры
+docker rm $(docker ps -aq) -- удалить все контейнеры
+docker rmi $(docker images -q) -- удалить все образы -f -- ключ принудительного удаления
+
+docker build -t image1 . -- создаст образ с иминем image1
+
+docker-compose.yml
+
+docker info
+
+docker run -it nickistre/ubuntu-lamp /bin/bash -- запустить образ и попасть в ssh
+
+
+docker-compose up -d
+
+docker-compose exec php php /var/www/symfony/bin/console cache:clear

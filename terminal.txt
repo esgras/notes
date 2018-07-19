@@ -1,0 +1,223 @@
+chmod - Изменить права файла
+	chmod -R 755 * - Изменить используя регулярку (все файлы и папки рекурсивно)
+	chmod augo+r-w=x filename - a(все пользователи) =x(сделать равные)
+
+pwd - показать текущий каталог
+
+cd - перейти по каталогам
+	cd ~ - перейти в домашний каталог
+	cd   - то же самое
+	cd - - вернутся в предыдущий каталог
+
+ls - список файлов
+	ls -laF - вывести в виде списка, отобазив все файлы, добавив к именам символы обозначающие тип (/ для каталого)\
+	ls -R   - показата рекурсивно содержание каталога и подкаталогов
+
+В линукс если файл начинаеться с . то он скрытый
+
+mkdir - создать папку
+	mkdir dir1 dir2 dir3 - создаст 3 папки в текущей
+	mkdir -p dir1/dir2/dir3 - создаст иерархию папок
+
+rmdir - удаляет не пустую папку	
+
+rm - удалить файл (папку)
+	rm -rf dir - удалить рекурсивно (с содержимым) без предупреждений
+
+mv - переместить (переименовать) файл
+	mv file1 file2
+	mv file1 dir1/file1
+
+cp - копировать файл
+	cp -a dir1 dir2 - копирует папку dir1 с ее содержимым внутрь dir2
+
+ps axu - вывести все процессы с указанием пользователя
+	ps axu | grep firefox  - выведет данные по firefox
+
+pidof firefox - выводит номер процесса по файлу
+
+kill - убить процес
+	kill -9 13567  - жесткое завершение
+
+pkill name -убить по имени
+
+killall - убить все процесы по имени
+	killall -s 9 firefox
+
+
+df -h - место на диске
+apt-get autoclean
+
+du -sh dir -- вывести размер папки
+du -h dir -d 1 	-- вывести размер элементов 1-го уровня в папке
+du -ah dir -- вывести размер со всеми элементами в папке
+
+Создать пользователя
+sudo useradd -m user1 //вместе с домашним каталогом
+sudo passwd user1
+sudo userdel -r user1 //удалить с домашним каталогом
+
+whoami -- под каким пользователем
+pwd -- текущий каталог
+
+su user1 -- войти под другим пользователем
+	
+groups user -- просмотр групп пользователя
+sudo usermod -G webusers user 
+sudo adduser user1 group1 -- добавить пользователя к группе	
+
+sudo -i -- войти под рутом (если пользователь в группе sudo) то можно зайти под root
+
+Свободное место на диске
+df -h - свободное место на диске
+ls -lsh - размер файлов в папке
+du -hsc * - вывести рамер всех файлов в папке ( с итогом)
+du -hs somedir/ - вывести размер каталога
+
+
+Температура
+Установить утилиту
+sudo apt-get instafll lm-sensors
+apt-get -f install устанавливает зависимости для пакетов
+
+Настроить - набирая yes
+sudo sensors-detect
+
+sensors - показать датчики
+watch sensors - показывает постоянно меняющиеся значения в консоли
+
+
+Работа с архивами
+
+zip
+zip arch.zip file.txt  -- добавить файл к архиву
+zip dir_arch.zip dir/  -- запокавать папку
+unzip -l arch.zip      -- получить список файлов архива
+unzip arch.zip -d dir/where/unzip/ -- распокавать в папку
+
+             
+
+запуск команды без вывода результатов
+$command > /dev/null 2>&1
+
+можно в php вызвать
+exec("command > dev/null 2&1 &"); # команда выполниться и php не ждет ее завершения
+
+chmod - Изменить права файла
+	chmod -R 755 * - Изменить используя регулярку (все файлы и папки рекурсивно)
+	chmod augo+r-w=x filename - a(все пользователи) =x(сделать равные)
+
+pwd - показать текущий каталог
+
+cd - перейти по каталогам
+	cd ~ - перейти в домашний каталог
+	cd   - то же самое
+	cd - - вернутся в предыдущий каталог
+
+ls - список файлов
+	ls -laF - вывести в виде списка, отобазив все файлы, добавив к именам символы обозначающие тип (/ для каталого)\
+	ls -R   - показата рекурсивно содержание каталога и подкаталогов
+
+В линукс если файл начинаеться с . то он скрытый
+
+mkdir - создать папку
+	mkdir dir1 dir2 dir3 - создаст 3 папки в текущей
+	mkdir -p dir1/dir2/dir3 - создаст иерархию папок
+
+rmdir - удаляет не пустую папку	
+
+rm - удалить файл (папку)
+	rm -rf dir - удалить рекурсивно (с содержимым) без предупреждений
+
+mv - переместить (переименовать) файл
+	mv file1 file2
+	mv file1 dir1/file1
+
+cp - копировать файл
+	cp -a dir1 dir2 - копирует папку dir1 с ее содержимым внутрь dir2
+
+ps axu - вывести все процессы с указанием пользователя
+	ps axu | grep firefox  - выведет данные по firefox
+
+pidof firefox - выводит номер процесса по файлу
+
+kill - убить процес
+	kill -9 13567  - жесткое завершение
+
+pkill name -убить по имени
+
+killall - убить все процесы по имени
+	killall -s 9 firefox
+
+tree -pufd -L 2 -- вывести рекурсивно директории уровнем 2
+	-p -- с правами
+	-u -- с владельцем
+	-g -- с группой
+	-d -- только директории
+	-f -- полный путь
+	-i -- если нужно убрать пробелы
+	-L -- уровень вложености
+
+find . -name 'TwigBundle' -- ищет в текущей директории каталоги и файлы по имени
+find . * | grep -P "1489af761f70948cadddc5e161913014" -- поиск на подобии регулярки
+
+adduser / useradd test
+deluser / 
+userdel --remove # c данными
+
+groupdel
+
+sudo adduser username groupname
+sudo apt-cache search package-name
+
+wget -O filename https://site.name/path/to/file.name
+
+tar -xJf file.tar.xz
+
+sudo grep -r '$GLOBALS' /home/vayn/hosts/back_domovoi/ --color +
+
+sudo ifdown wlan0 && sudo ifup wlan0
+sudo service network-manager restart
+ifconfig eth0 down && ifconfig eth0 up
+sudo /etc/init.d/networking restart
+sudo killall NetworkManager && sudo NetworkManager
+
+sudo lshw -C network -- вывести информацию об сетевом адаптере
+
+mysqldump -u root -pstr93lv18 danceark > danceark.sql
+zip -R upload.zip upload/
+
+tar -zcvf upload.tar.gz upload/
+
+
+mysqldump -u dark -pHr%hbMNsne dark > danceark.sql
+
+
+https://vaynn@bitbucket.org/vaynn/danceark.git
+
+Простой шел скрипт
+создать файлик file.sh
+#!/bin/bash
+
+#код скрипта
+
+#если нужно что бы выполнился скрипт и воздействовал в терминал
+exec bash
+
+и что бы не нужно было прописывать через . находясь в папке делаем симлинк в /usr/bin/local
+
+
+passwd worker -- поменять пароль
+
+SET PASSWORD FOR 'root'@'localhost' = PASSWORD('qwerasdf11'); -- mysql изменить пароль
+
+
+superadmin@mail.com
+et2vjmvzlvcznzs
+
+UPDATE user SET password = '$2y$10$N7Qd6LoBeGHkCVyl0OVV4uzmq5kh3GFvxNQ4yAM/6rwwdszzroLam' WHERE email LIKE 'superadmin@mail.com';
+
+$1 -- аргумент в терминале
+
+#!/bin/bash
+php test.php $1 -- пример вызова пароля

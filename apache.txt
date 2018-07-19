@@ -1,0 +1,8 @@
+mpm_itk -- модуль позволяющий запускать виртуальный хост из под пользоваталя
+sudo apt-get install libapache2-mpm-itk
+a2enmod mpm_prefork
+a2enmod mpm_itk
+
+<IfModule mpm_itk_module>
+    AssignUserId user-www user-www
+</IfModule>

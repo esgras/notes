@@ -1,0 +1,151 @@
+$xml = simplexml_load_file($filename) -- получить xml
+проход по узлам например
+browsers > browser*3 все что есть в файле
+мы получаем дерево изнутри верхнего элемента
+тоесть browser*3
+
+foreach ($xml->browser as $key => $val) {
+	
+}
+
+$node->children() -- 	получить потомков узла
+$node->getName()
+
+$val->attributes() -- работа с элементами
+
+$xml->asXml() -- вернет в виде строки
+$xml->asXml(file) -- сохраняет в файл
+
+
+если в цикле проходить по узлам то $val -- ссылка на элемент изменяя его изменяеться значение
+
+
+HybridAuth
+для настройки
+
+в config
+'base_url' => путь к файлу с Hybrid_Endpoint::process();
+
+если это отдельный файл то просто путь
+
+если это в повторяющемся экшене то
+
+if (isset($_GET['hauth_start']) || isset($_GET['hauth_done']))
+    Hybrid_Endpoint::process();
+
+в настройках на сервере (гугл, фейсбук ...)
+где указываеться callback
+прописать путь к base_url + hauth.done=ProviderName
+
+например для гугла
+http://oauth.my/hybrid.php?hauth.done=Google
+
+http://oauth.my/hybrid.php?hauth_done=Facebook
+
+\Hybrid_Auth::storage()->set('user', $identifier);
+\Hybrid_Auth::storage()->set('user', null);
+Hybrid_Auth::storage()->get( 'user' );
+
+$hybridauth = new Hybrid_Auth($config);
+
+$google = $hybridauth->authenticate('Google');
+$google->getUserProfile() -- залогиниться и получить данные
+
+(new \Hybrid_Auth('config.php'))->logoutAllProviders(); -- разлогиниться
+
+get_class($variable) -- корректно возвращает имя класса, поэтому конструкции типа
+	get_class($obj)::SOME_CONST -- работают
+
+
+phpunit
+
+можно ловить исключения через аннотации
+
+/** @expectedException InvalidArgumentException */
+public function testLengthThrowExceptionOnEmptyOptions() {
+	
+}
+
+$d = new \DateTime; 
+$d->getOffset() -- показывает в секундах смещение текущей локали от UTC
+
+new DateTime("now", new DateTimeZone("America/New_York")) -- создать объект по TimeZone
+$d->setTimeZone(new \DateTimeZone("Europe/Kiev"));
+$d->getTimestamp();
+$d->format('Y-m-d');
+
+еще есть DateInterval и DateImmutable
+
+$date->setDate();
+$date->setTime()
+$date->add()
+DateInterval -- создаеться с помощью конструктора в формате
+P - период и чего сколько от большего к меньшему, если надо учитывать время то указываеться T
+примеры
+
+new \DateInterval('P2D')
+P2D -- период 2 дня
+PT2S  -- период 2 секунды (T перед временем)
+P6YT5M -- 6 лет и 5 минут
+
+php -r "print true ? 1 : (true ? 2 : (true ? 3 : 4));" -- в php тернарный оператор что бы обрабатывал корректно надо заключать в скобки элементы.
+
+Отключить сайт от индексации
+<meta name="robots" content="noindex, nofollow">
+
+User-agent: *
+Disallow: /
+
+Рекурсия предпологает что есть некое условие, которое может стать ложным, и на этом оборветься стек вызовов
+
+в рекурсии можно делать действия до погружения, после погружения и в как в момент погружения так и после (до вызова рекурсии, на спуске)
+
+до погружения
+function number(n, arr) {
+    if (arr == undefined) {
+        arr = [];
+    }
+    arr.push(n);
+
+    if (n != 1) {
+        number(n - 1, arr);
+    }
+
+    return arr;
+}
+
+number(5) -- [5, 4, 3, 2, 1]
+
+после погружения
+function number(n, arr) {
+    if (arr == undefined) {
+        arr = [];
+    }
+
+    if (n != 1) {
+        number(n - 1, arr);
+    }
+    arr.push(n);
+
+    return arr;
+}
+number(5) -- [1, 2, 3, 4, 5]
+
+как до так и после
+function number(n, arr) {
+    if (arr == undefined) {
+        arr = [];
+    }
+    arr.push(n);
+
+    if (n != 1) {
+        number(n - 1, arr);
+    }
+    arr.push(n);
+
+
+    return arr;
+}
+
+
+console.log(number(5)); -- [5, 4, 3, 2, 1, 1, 2, 3, 4, 5]

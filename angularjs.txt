@@ -1,0 +1,158 @@
+ng-app - директива для кода приложения
+{{some_var}}  -- идет на вывод
+
+ng-app - можно задать имя для приложения и потом настраивать отдельно для каждого приложения
+
+ng-controller - директива для контроллера, внутри которого создаеться своя область видимости с доступными переменными
+
+
+<div ng-app="app">
+	<div ng-controller="myController">
+		<input type="text" ng-model="text">
+		{{text}}
+		{{message}}
+	</div>
+</div>
+
+angular.module('app', []).controller('myController', function($scope) {
+	$scope.message = 'Hello World';
+	$scope.text = 'Lorem Ipsum sit dolar amete';
+});
+
+$scope - Лексическое окружение, двусторонний биндинг
+то есть я могу внутри функции запилить значение и оно передастся в html
+и могу в DOM задавать значение и оно будет моментально подхватываться
+
+фабрика
+если нужно разделить данные между несколькими контролерами то нужно на уровне приложения создать фабрику возвращающую объект с данными
+и после этого через скоп выводить данные из фабрики
+
+app.factory('myFactory', function() {
+	return {
+		hello: 'Hello World'
+	};
+});
+
+app.controller('firstController', function($scope, myFactory) {
+	$scope.message = 'Hello';
+	$scope.myFactory = myFactory;
+});
+
+app.controller('secondController', function($scope, myFactory) {
+	$scope.message = 'Hello';
+	$scope.myFactory = myFactory;
+	
+});
+
+Angular вложенные контролеры
+
+app.controller('myBookController', function($scope) {
+	$scope.showBook = function() {
+		console.log('This is some book')
+	};
+});
+
+app.controller('angularController', function($scope) {
+	
+});
+
+<div ng-controller="myBookController">
+	<div ng-controller="angularController">
+		<button ng-click="showBook()">Show AngularBook</button>
+	</div>
+</div>
+
+При клике на кнопку отработает родительский метод showBook()
+его можно переопределить в дочернем контролере
+$scope.showBook = function() { console.log('angularController'); };
+
+контроллер as синтаксис
+<div ng-controller="myBookController as myBook">
+	<button ng-click="myBook.show()"></button>
+</div>
+
+app.controller('myBookController', function() {
+	this.show = function() { console.log('Some text'); };
+});
+
+теперь внутри контроллера обращения к this вместо $scope
+а снаружи он доступен как myBook
+который указан через as
+
+Регестрирует функцию которая будет вызываться при создании модуля,
+$rootScope - глобальный $scope, туда записали новую переменную
+app.run(function($rootScope) {
+	$rootScope.message = 'Hello, World';
+});
+
+<body>
+	{{message}}
+</body>
+
+эти глобальные перменные можно определять внутри контроллера и даже переопределять, главное что бы контроллер был объявлен в модуле
+
+/******* ДИРЕКТИВЫ *******/
+
+ng-app - имя модуля
+ng-controller - контроллер
+ng-model - модель
+ng-click - onclick
+ng-repeat - аналог foreach
+	ng-repeat="phone in phones"
+	имеет ряд преопределенных переменных
+
+    $index: возвращает индекс элемента в массиве
+
+    $first: возвращает true, если элемент является первым в массиве
+
+    $last: возвращает true, если элемент является последним в массиве
+
+    $middle: возвращает true, если элемент не является ни первым, ни последним в массиве
+
+    $even: возвращает true, если элемент является четным
+
+    $odd: возвращает true, если элемент является нечетным
+
+ng-class - класс элемента
+	ng-repeat="phone in phones" ng-class="$odd ? 'odd' : 'even'"
+
+ng-bind: осуществляет привязку к свойству innerText html-элемента
+
+ng-bind-html: осуществляет привязку к свойству innerHTML html-элемента
+	1. нужно на страницу подключить библиотеку angular-sanitize.min.js
+	2. нужно указать в настройках модуля ее использование - angular.module('myApp', ['ngSanitize'])	
+	3. вставка значения без фигурных скобок 
+		$scope.text = '<b>Hello</b>'
+		<p ng-bind-html="text"></p>
+
+ng-bind-template: аналогична ng-bind за тем исключением, что позволяет установить привязку сразу к нескольким выражениям
+	например: <p ng-bind-template="{{phones[0].name}}: {{phones[0].price}} $"></p>
+
+ng-model: создает двустороннюю привязку -- используеться к input select textarea
+
+ng-non-bindable: определяет участок html-кода, в котором привязка не будет использоваться
+
+<ng-include></ng-include> -- динамическое подгружение файла
+	Директива ng-include может принимать три параметра:
+	    src: url загружаемого файла
+	    onload: определяет выражение, которое рендерится при загрузке файла
+	    autoscroll: определяет, допускается ли прокрутка во время загрузки файла
+
+ng-style: устанавливает у элемента стили css
+
+ng-class: задает элементу определенный класс
+
+ng-class-even: устанавливает класс для четных элементов
+
+ng-class-odd: устанавливает класс для нечетных элементов
+
+ng-hide: скрывает элемент
+
+ng-show: делает элемент видимым
+
+ng-if: задает для элемента некоторое условие
+
+
+
+
+/******* ДИРЕКТИВЫ *******/

@@ -1,0 +1,12 @@
+{% spaceless %}all input {% endspaceless %} -- сжимаеться весь выходной html
+composer require nochso/html-compress-twig
+app.html_compress:
+        class: nochso\HtmlCompressTwig\Extension
+        tags:
+          - { name: twig.extension }
+
+{% htmlcompress %}
+	<script>
+		#Here is javascript to minify to one line
+	</script>
+{% endhtmlcompress %}

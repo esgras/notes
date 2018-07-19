@@ -1,0 +1,178 @@
+Tools::isSubmit('element')
+Tools::getValue($key[, $defaultValue]) -- ищет в POST затем в GET false если пусто
+
+Configuration::updateValue($key, $val)
+Configuration::deleteValue($key, $val)
+Configuration::get($key)
+
+
+DataBase
+_DB_PREFIX_
+$db = Db::getInstance();
+$db->insert($table, $data)
+$db->update($table, $data[, $conditon])
+$db->Insert_ID() // return the last ID inserted in this Db instance
+$db->executeS($sql) -- for Select, return array of values
+$db->getRow($sql) -- for Select, return array with line data, automatically adds the LIMIT 1
+$db->getValue($sql) -- for scalara data, for example - COUNT
+$db->execute($sql) -- return boolean result, used for UPDATE/DELET/INSERT
+$db->query($sql)   -- в отличае от execute не кеширует результаты
+
+pSQL($text) -- экранирование текста
+
+Соглашения об именах столбцов в PrestaShop
+	Идентификатор id_table_name
+	Дата	date_fieldname
+
+Hooks
+Hook::exec('displayProductTabContent') -- вызвать хук в контролере
+{hook	h='hookName'} 		       -- вызвать хук в Smarty 
+
+Hook::exec('displayExample',	array('val1'	=>	23,	'val2'	=>	'Hello')) с передачей параметров
+
+Hook::exec('displayHome', array('x' => 100, 'y' => 200)
+
+public function hookDisplayHome($params) {
+	var_dump($params); // $params['x'] == 100, $params['y'] == 200
+}
+
+
+
+$context = Context::getContext()
+
+$this->context->smarty->assign($key, $val)
+$this->context->link/cart/cookie/language
+$this->context->controller->addJS($this->_path . 'views/js/myscript.js');
+$this->context->controller->addCSS($this->_path . 'views/css/mystyle.css');
+
+Product::getProducts($langId, $start, $limit, $orderBy, $ascOrDesc, $category = false, $onlyActive = false, $context = false)
+//если $limit <= 0 то он не используеться
+$images = $product->getImages($langId)
+
+$link->getImageLink($product->link_rewrite[$langId], $img['id_image'], $type), 
+	где $type - (cart|small|medium|home|large|thickbox)_default -- указывает на размер изображения
+
+
+Основы Структуры
+ps_product
+ps_product_lang.link_rewrite
+
+
+
+ps_feature -- указывает какая фича на какой позиции
+ps_feature_product -- указывает у какого продукта какая фича с каким значением
+ps_feature_lang -- интернационализация для имен фичей
+ps_feature_value_lang -- интернационализация для значений фичей
+ps_feature_value  -- указывает у какой фичи какое значение (не зависимо от продукта)
+$this->context->controller->addJS($this->_path . 'views/js/myscript.js');
+
+
+Для инстала в Presta можно добавлять нужный функционал в метод install (спасибо, Кэп)
+тоже с деинсталом
+
+главное бросать файлы в install / install.sql + uninstall.sql ...
+
+Для upgrade нужно завести папку upgrade
+	в ней install-{version}.php - который будет вызываться автоматически при апгрейде, при этом не забывать обновлять основной функционал
+	в нем function install_0_2($module) { //здесь $module - ссылка на объект модуля
+		//what to do
+		return true;
+	      }			
+
+
+В модуле можно задать метод function onClickOption($type, $href = false) {}
+	здесь $type - configure, disable, reset, delete
+	$href - ссылка на action на который кликнули
+
+
+Media::addJsDef(array('variable' => $value)) // добавить свою переменную в JavaScript на странице
+
+
+Получить токен другого контролера
+Tools::getAdminToken('AdminProducts'.intval(Tab::getIdFromClassName('AdminProducts')).intval($this->context->cookie->id_employee));
+
+Tools::isSubmit('element')
+Tools::getValue($key[, $defaultValue]) -- ищет в POST затем в GET false если пусто
+
+Configuration::updateValue($key, $val)
+Configuration::deleteValue($key, $val)
+Configuration::get($key)
+
+
+DataBase
+_DB_PREFIX_
+$db = Db::getInstance();
+$db->insert($table, $data)
+$db->update($table, $data[, $conditon])
+$db->Insert_ID() // return the last ID inserted in this Db instance
+$db->executeS($sql) -- for Select, return array of values
+$db->getRow($sql) -- for Select, return array with line data, automatically adds the LIMIT 1
+$db->getValue($sql) -- for scalara data, for example - COUNT
+$db->execute($sql) -- return boolean result, used for UPDATE/DELET/INSERT
+$db->query($sql)   -- в отличае от execute не кеширует результаты
+
+pSQL($text) -- экранирование текста
+
+Соглашения об именах столбцов в PrestaShop
+	Идентификатор id_table_name
+	Дата	date_fieldname
+
+Hooks
+Hook::exec('displayProductTabContent') -- вызвать хук в контролере
+{hook	h='hookName'} 		       -- вызвать хук в Smarty 
+
+Hook::exec('displayExample',	array('val1'	=>	23,	'val2'	=>	'Hello')) с передачей параметров
+
+Hook::exec('displayHome', array('x' => 100, 'y' => 200)
+
+public function hookDisplayHome($params) {
+	var_dump($params); // $params['x'] == 100, $params['y'] == 200
+}
+
+
+
+$context = Context::getContext()
+
+$this->context->smarty->assign($key, $val)
+$this->context->link/cart/cookie/language
+$this->context->controller->addJS($this->_path . 'views/js/myscript.js');
+$this->context->controller->addCSS($this->_path . 'views/css/mystyle.css');
+
+Product::getProducts($langId, $start, $limit, $orderBy, $ascOrDesc, $category = false, $onlyActive = false, $context = false)
+//если $limit <= 0 то он не используеться
+$images = $product->getImages($langId)
+
+$link->getImageLink($product->link_rewrite[$langId], $img['id_image'], $type), 
+	где $type - (cart|small|medium|home|large|thickbox)_default -- указывает на размер изображения
+
+
+Основы Структуры
+ps_product
+ps_product_lang.link_rewrite
+
+
+
+ps_feature -- указывает какая фича на какой позиции
+ps_feature_product -- указывает у какого продукта какая фича с каким значением
+ps_feature_lang -- интернационализация для имен фичей
+ps_feature_value_lang -- интернационализация для значений фичей
+ps_feature_value  -- указывает у какой фичи какое значение (не зависимо от продукта)
+$this->context->controller->addJS($this->_path . 'views/js/myscript.js');
+
+
+Для инстала в Presta можно добавлять нужный функционал в метод install (спасибо, Кэп)
+тоже с деинсталом
+
+главное бросать файлы в install / install.sql + uninstall.sql ...
+
+Для upgrade нужно завести папку upgrade
+	в ней install-{version}.php - который будет вызываться автоматически при апгрейде, при этом не забывать обновлять основной функционал
+	в нем function install_0_2($module) { //здесь $module - ссылка на объект модуля
+		//what to do
+		return true;
+	      }			
+
+
+В модуле можно задать метод function onClickOption($type, $href = false) {}
+	здесь $type - configure, disable, reset, delete
+	$href - ссылка на action на который кликнули

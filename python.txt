@@ -1,0 +1,271 @@
+input("Some String")
+
+a = 2; b = 3
+if (a == 2 
+	and b == 3):
+	print(a, b)
+
+and or not
+
+A = Y if X else Z
+
+NULL == None
+TRUE == True
+FALSE == FALSE
+
+dict.items()
+
+for key, val in SUFFIXES.items():
+	print(key, val)
+
+type(var)
+
+/ -- деление
+// -- деление на цело
+** -- возведение в степень 5 ** 2 == 25
+int(), float(), str(), round(val, precission)
+'{0} {1:.1f}'
+
+str.lower() upper()
+
+if x:
+elif y:
+else:
+
+range(0, 5) -- [0, 1, 2, 3, 4] -- 5 не входит
+range(5) -- [0, 1, 2, 3, 4]
+
+def test(*params): -- неограниченное число параметров
+
+def test():
+    sum = 0
+    count = 5
+
+    return sum, count -- может вернуть несколько элементов из функции
+
+sum, count = test()
+
+можно обьявлять функцию в функции
+переменная береться из замыкания на уровень выше
+
+import filename -- импортировать модуль
+import filename as f
+from filename import function_name -- импорт в глобальное пространство имен
+form filename import *
+
+при запуске среда хранит имя выполняемого файла (модуля )
+__main__ -- здесь содержиться имя выполняемого файла
+
+try:
+except ExceptionClass:
+finally:
+
+arr = [1, 2, 3, 4]
+arr2 = list(arr) -- клонировать массив, массив передаеться по ссылке
+
+отрицательный индекс - номер элеманта с конца
+arr[-1] == 4
+
+arr = [10] * 3 === [10, 10, 10] -- array_repeat
+
+range -- не массив а функция возвращающая объект
+arr = list(range(5)) -- [0, 1, 2, 3, 4]
+
+i = 0
+while i < len(arr):
+    print(arr[i])
+    i += 1
+
+len(arr) -- длина массива
+
+append(item): добавляет элемент item в конец списка
+
+insert(index, item): добавляет элемент item в список по индексу index
+
+remove(item): удаляет элемент item. Удаляется только первое вхождение элемента. Если элемент не найден, генерирует исключение ValueError
+
+clear(): удаление всех элементов из списка
+
+index(item): возвращает индекс элемента item. Если элемент не найден, генерирует исключение ValueError
+
+pop([index]): удаляет и возвращает элемент по индексу index. Если индекс не передан, то просто удаляет последний элемент.
+
+count(item): возвращает количество вхождений элемента item в список
+
+sort([key]): сортирует элементы. По умолчанию сортирует по возрастанию. Но с помощью параметра key мы можем передать функцию сортировки.
+
+reverse(): расставляет все элементы в списке в обратном порядке
+
+Кроме того, Python предоставляет ряд встроенных функций для работы со списками:
+
+len(list): возвращает длину списка
+
+sorted(list, [key]): возвращает отсортированный список
+
+min(list): возвращает наименьший элемент списка
+
+max(list): возвращает наибольший элемент списка
+
+pop/push -- pop/append
+shift -- list[0] + list[1:]
+unshift -- [0] + list
+count() -- len()
+explode() -- arr.split()
+join() -- '-'.join(list)
+array_slice() - list[0:2]
+range() -- range(0, 5)
+array_merge() -- list1 + list2
+array_splice() -- list.pop(3), list.insert(3, 100)
+
+
+in_array();  -- count через колво вхождений или el in list
+array_search() -- index() -- если не найден ValueError
+sort() -- sort()
+
+
+array_diff() -- set.difference(list2)
+array_unique() -- set()
+
+array_map() -- map(f, iterrableObject)
+array_filter() -- filter(f, iterrableObject)
+
+array_values() -- dict.values()
+array_keys() -- dict.keys()
+
+for item, key in dict.items()
+
+if el in arr:
+	print(True)
+
+Модуль copy -- функция deepcopy
+arr = copy.deepcopy(arr2)
+
+arr2 = arr[2:] -- скопировать начинаю я элемента arr[2]
+arr2 = arr[2:5] -- скопировать с arr[2] по arr[5] -- не включительно
+arr2 = arr[:5] -- до arr[5] -- не включительно
+
+Кортеж -- неизменяемый массив
+tup = (1, 2, 3)
+tup = tuple([1, 2, 3]) 
+из функции можно вернуть кортеж
+def func():
+	return 5, 10
+
+x, y = func()
+
+Есть способ преобразовать список в словарь
+arr = [
+	['x', 100], ['y', 200]
+]
+
+dit = dict(arr) -- вернет хэш {'x': 100, 'y': 200}
+если в элемент с ключем которого нет записать элемент то добавиться, иначе ошибка
+el = dit.get(5) -- вернет элемент с ключем 5 или None
+el = dit.get(5, 'SOME DEFAULT VALUE')
+dict.items() -- вернет кортеж ключей и кортеж значений
+dict.keys() -- список ключей
+dict.values() -- список значений
+
+if el in arr -- аналог in_array()
+
+if el in dict1 -- аналог in_array(el, array_keys())
+
+dit.pop(key)
+dit.pop(key, defaultValue)
+dit.clear()
+dit.copy() -- скопировать словарь
+
+set -- множество, список из уникальных элементов
+st = {1, 2, 3, 4, 1} -- {1, 2, 3, 4}
+st = set([1, 2, 3, 4, 5])
+
+len -- применяеться для списоков, словарей, кортежей, множеств
+st.remove(el) -- с ошибкой
+st.discard(el) -- без ошибки
+st.empty()
+
+for el in st:
+	print(el)
+
+st.copy()
+st.union(st2)
+st.intersaction(st2)
+st.difference(st2)
+issubset
+issuperset
+
+st3 = frozenset(st2) -- множество которое нельзя менять
+
+import os
+os.path.isfile(file)
+
+mode - r w a b
+
+with open(file, mode) as myfile: -- автоматически закроет
+	print(myfile.readline())
+myfile.write('Some Text') -- записать файл
+myfile.read() -- прочитать полностю файл
+truncate()
+seek()
+
+
+write -- записываеться строка, нужно предварительно данные конвертировать к строке
+
+open(filename, mode='r', encoding='utf8')
+
+print(line, 100, sep="x", end="") -- в питоне в стандартные функции можно передавать аргументы с именем, тоесть здесь sep -- будет разделителем между значениями а не пойдет на печать
+
+экранирование строки
+x = 10
+str = f"string is {x}" -- string is 10
+
+str = '{} {} {}'
+print(str.format(10, 20, 30)) -- вставит по порядку 10 20 30
+
+pydoc function_name -- справка по команде
+
+from sys import argv
+x, y = argv -- здесь argv список значений полученных на вход программе
+
+в питон по умолчанию используеться utf-8
+str = '1234'
+rawBytes = str.encode(encoding)
+str = rawBytes.decode(encoding)
+
+str.split(' ') -- разбить строку полчить массив
+
+
+arr = [1, 2, 3]
+' '.join(map(str, arr)) -- объеденить в строку, сперва нужно элементы привести к строке
+
+str_repeate == 'str' * repeatCount
+S.find(str, [start],[end])
+S.rfind(str, [start], [end])
+S.replace(what, replacement)
+
+' '.join(list) -- вернет строку из списка с разделителем пробел - ' '
+s.strip([char])
+
+del el[key] -- аналог unset
+
+
+os.getcwd() -- текущая директория
+os.path
+os.isdear()
+os.isfile()
+__file__
+
+import glob
+glob.glob('*') -- список всех файлов и директорий
+
+import time
+time.strftime('%Y-%m-%d %H:%M:%S')
+time.gmtime()
+
+Генераторы:
+	список - lst = [el * 3 for el in list1]
+	словарь - dct2 = {k:v*2 for k,v in dct.items()}o
+
+import re
+pattern = '^M?1$'
+re.search(pattern, string)

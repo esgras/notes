@@ -1,0 +1,1737 @@
+$this->generateUrl('')      
+в Twig есть 2 пути получения ссылок
+path('route_name', {'par': val}) -- по имени роута относительная ссылка 
+url('some/path') -- по имени роута абсолютная ссылка
+
+production mode кеширует шаблоны
+
+conso1le doctrine:database:create
+console doctrine:generate:EntityName
+console doctrine:scheme:update --force
+console doctrine:scheme:update --dump-sql - показывает текст запросов
+console doctrine:fixtures:load
+console doctrine:fixtures:load --append
+
+assets - в твиг функция прописывает путь от директории web до нужного ассет
+
+в шторме кликнуть в окне выбора по классу автоматически пропишет нужный use
+link:css - в шторме
+
+twig - dump(_context) -- вывести значение всех переменных в шаблоне
+$this->get('twig')->addFunction(new \Twig_SimpleFunction('die', function(){die();})); //запилить в твиг функцию die
+
+twig
+    var is empty
+    var is not empty
+    var is defined -- проверка что переменная isset 
+    post.created|date("Y-m-d H:i:s")
+
+    ~ - конкатенирует строки в twig
+
+    ? - тернарный оператор
+    routeName: tag ? 'homepage' : 'post_index'
+
+    {{ 'text'  ~'some' }}
+    {{ asset('images/' ~ image) }}
+
+    {% if (a == 5) and (b == 6) or ( c % 3 == 1)}
+
+    {% if collection|length %} -- условие проверяющие длину коллекции в Twig
+
+    collection | first -- достанет первый элемент из коллекции
+
+в twig доступно несколько объектов
+    app.user
+    app.session
+    app.request ...
+
+
+в Symfony у Controller нет __construct (точнее есть но он закрыт под слоями фреймворка и переопределить его не получиться)
+
+поэтому то что нужно сделать в контролере нужно вписывать в SetContainer
+
+для этого нужно в контролере переопределить метод SetContainer()
+
+пример 
+
+use Symfony\Component\DepencyInjection\ContainerInterface ;
+
+public function setContainer(ContainerInterface $container = null) {
+	parent::setContainer($container);
+	$this->get('twig')->addFunction(new \Twig_SimpleFunction('die', function(){ die(); }));
+}
+
+{% include ':my:new.html.twig' with {'var1': var1, 'var2': var2}%}
+{% include ':my:new.html.twig' with {'var1': var1, 'var2': var2}%}
+
+
+
+аналогично
+
+{% set vars = {'var1': var1, 'var2': var2} %}
+{% set x = 'Hello'}
+
+{% include ':my:new.html.twig' with vars %}
+
+{% set var3%}
+    <div class="container">
+        <div class="row">Hello, Default</div>
+    </div>
+{% endset %}
+
+{% include ':default:new.html.twig' %} //из другой папки (обычно для другого контролера)
+
+{{ render(controller('BlogBundle:comment:new', { 'blog_id': blog.id })) }}   --  рендер метода контролера в twig, замена widget Yii2
+
+Можно включить дебаг плагин в Switmailer
+$logger = new Swift_Plugins_Loggers_ArrayLogger();
+$mailer->registerPlugin(new Swift_Plugins_LoggerPlugin($logger));
+
+и после отправки (send())
+echo $logger->dump();
+
+
+$form = $this->createFormBuilder()
+                    ->add('from', EmailType::class)
+                    ->add('message', TextareaType::class)
+                    ->add('send', SubmitType::class)
+                    ->getForm();
+
+$form->handleRequest(Request::createFromGlobals());
+Request::createFromGlobals()->getRequestUri()
+
+if ($form->isSubmitted() && $form->isValid()) {
+    #dump("HELLO, Submit!");
+    $data = $form->getData();
+    $message = \Swift_Message::newInstance()
+        ->setSubject('Hello, Message')
+        ->setFrom($data['from'])
+        ->setTo($to)
+        ->setBody($data['message'   ], 'text/html');
+
+    $this->get('mailer')->send($message);
+
+return $this->render('site/index.html.twig', ['my_form' => $form->createView()]);
+
+
+$post = $this->getDoctrine()->getManager()->find($id);
+$form = $this->createForm(FormType::class, $post, 
+    ['action' => $this->generateUrl('update_post', 'id' => $post->getId())]) -- 
+        задавая 2-м параметром объект заполняет форму значениями полей из этого объекта
+
+        и в конце $this->flush() -- обновит запись
+        если запись создаеться persist + flush
+
+
+        
+В twig - {{ form(my_form )}}
+
+кастомизация формы
+в config.yml в разделе twig
+twig:
+    ....
+    form_themes:
+        - 'bootstrap_3_horizontal_layout.html.twig'
+
+в твиг в шаблоне можно вызывать родителя например
+
+в родительском шаблоне
+  {% block stylesheets %}
+        <link href='http://fonts.googleapis.com/css?family=Irish+Grover' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=La+Belle+Aurore' rel='stylesheet' type='text/css'>
+        <link href="{{ asset('css/screen.css') }}" type="text/css" rel="stylesheet" />
+    {% endblock %}
+
+в дочернем шаблоне
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/blog.css') }}">
+{% endblock %}
+
+сделает 4 link
+
+
+ReddistPost в AppBundle\Entity\ReddistPost
+$posts = $this->getDoctrine()->getRepository("AppBundle:ReddistPost")->findAll(); -- работа с доктрин
+$post = $this->getDoctrine()->getRepository("AppBundle:ReddistPost")->find(1)  -- id
+$post = $this->getDoctrine()->getRepository("AppBundle:ReddistPost")->findOneBy(['id' => 1])
+$posts = $this->getDoctrine()->getRepository("AppBundle:ReddistPost")->findBy(['id' => [1, 2, 3]])
+$posts = $this->getDoctrine()->getRepository("AppBundle:ReddistPost")->findBy(['id' => [1, 2, 3]], ['orderByField' => $desc]) - получить отсортированные результаты
+
+$em->persist($post);  //обновить строку
+$em->remove($post);	  //удалить строку
+$em->flush();
+
+
+$this->redirectToRoute("route_name") -- редирект внутри контроллера
+
+use Doctrine\Common\Collections\ArrayCollection;  -- коллекция для отношения принадлежности
+$collection->contains($objectFromCollection)
+$collection->add($object)
+
+
+можно создавать свой Bundle в папке src
+главное его добавить в 	app\AppKernel.php и в routing.yml
+
+пример подгрузки данных из routing.yml
+
+homepage:
+    path: /
+    defaults: {_controller: BlogBundle:Blog:index}
+
+    
+пример роута в routing.yml
+
+post_delete:
+      path: /post/delete/{id}
+      defaults: {_controller:BlogBundle:Post:delete}
+      requirements: {id: \d+}
+      methods: 'POST' #можно задать в виде массива ['POST', 'GET']
+
+
+в Symfony практикуеться мини разделение на rest
+тоесть есть 2 экшена которые частично себя дублируют
+
+public function viewAction($id) {
+    //здесь просто передаем данные в View
+}
+
+public function viewHandleAction($id) {
+    //здесь делаем что было в 1-м экшене + обрабатываем форму с изминениями данных
+}
+
+особенность здесь в том что оба экшена можно настроить на один uri
+но при этом ОБЕЗАТЕЛЬНО нужно разделить их методами запроса
+1-й action - GET
+2-й action - POST
+
+в нем можно создавать папки плоть до Resource и обращаться к view MyBundle:dir:view.html.twig
+
+app.flashes -- обращение в twig к flashes с версии 3.3
+
+flashes - доступны только до первого обращения тоесть
+    если до нужно обращеня к флешам будет дебаг, или вывод количество или еще что-то (например пустой блок с выводом)
+        то флеши уничтожаться
+
+в twig доступен объект app.user
+можно использовать
+{% if app.user %}
+    <li><a href="/logout">Logout</a></li>
+    <li><a href="/profile/{{ app.user.id }}">Profile</a></li>
+{% endif %}
+
+в Twig можно использовать контсрукцию наподобии, очень удобно так как не нужно запускать if который сотрет сессию key == 0 - первый индекс массива
+
+{% for key, flash in app.flashes('success') if key == 0 %}
+    <div class="alert alert-success">{{ flash }}</div>
+{% else %}
+    {{ form(form) }}
+{% endfor %}
+
+в Bundle можно объявить свой типа формы
+
+Bundle\Form\Type\MyFormType.php
+
+namespace FormBundle\Form\Type;
+
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+
+в FormType можно использовать валидаторы без класса данных
+
+
+если огранечение специфично то лучше его выносить в FormType
+например пароль - доктрин обновляет полностью сущности
+т.е. хеш пароля длиной 64 символа, если в классе сущности иметь ограничение длины пароля
+то валидатор просто не пропустит обновление сущности)
+
+
+    $builder->add('email', EmailType::class, [
+        'constraints' => [
+            new Email(), new NotBlank()
+    ]])
+
+    для получения данных без класса данных нужно не забыть
+    $form->handleRequest(Request::createFromGlobals())
+
+первая функция делает свой тип формы
+вторая забивает значения по умолчанию	
+
+class ProductType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('title', TextType::class)
+            ->add('availableFrom', DateTimeType::class)
+            ->add('description', TextareaType::class)
+            ->add('save', SubmitType::class);
+    }
+
+    public function ConfigureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => 'FormBundle\Entity\Product'
+        ]);
+    }
+}
+
+в форму можно выводить свои ошибки
+$error = new FormError('Wrong type of email')
+$form->get('email')->addError($error)
+
+в форму можно передавать нужный сервис
+или объявив форму как сервис еще не пробывал
+
+или задав через configureOptions сервису
+
+
+если у класса есть доступ к ServiceContainer
+    то можно получить доступ к любому сервису
+        $doctrine = $this->getContainer->get('doctrine');
+        $em = $doctrine->getManager();
+
+        или 
+        $em = $this-getContainer()->get('doctrine.orm.entity_manager');
+
+        $user = $em->getRepository('AppBundle:User')
+
+        $user = $this->getUser() -- доступ к текущему юзеру
+
+можно задать для Entity сокращенный namespace
+        $em->getConfiguration()->addEntityNamespace("e", "AppBundle\Entity");
+
+queryBuilder
+    $em->createQueryBuilder()
+        ->select(['a'])->from('AppBundle:EntityName', 'a')
+        ->getQuery()->getResult() -- достает все поля из сущности AppBundle:EntityName с alias a
+            если нужно отдельные поля можно указать в строку через запятую 
+                "a.id, a.name" или ["a.id", "a.name"] или "a.id", "a.name"
+
+$em->createQueryBuilder()
+        ->select('b')
+        ->from('BlogBundle:Blog', 'b')
+        ->addOrderBy('b.created', 'DESC')
+        ->getQuery()
+        ->getResult();
+
+
+        ->getSingleScalarResult() -- вернет одно скалярное значение из результата
+
+$qb->setFirstResult($offset) -- установить offset
+$qb->setMaxResults($limit); -- установить LIMIT
+$db->addOrderBy('b.created', 'DESC');
+
+
+по умолчанию при соединениях используеться ленивая загрузка
+blog.comments - первым запросом извлекаеться блог, 2-м комментарии к блогу
+
+жадную загрузку нужно организовывать через query builder
+$em->createQueryBuilder()
+        ->select('b', 'c')
+        ->from('BlogBundle:Blog')
+        ->leftJoin('b.comments', c)
+        ->addOrderBy('b.created', 'DESC')
+        ->getQuery()
+        ->getResult();                          теперь 1 запрос
+
+$qb->leftJoin('p.comments', 'c', 'WITH', 'c.status=1'); -- добавить условие в ON
+
+
+DQL основы
+вместо таблиц классы Entity
+в запросах обезательно указывать каждой Entity псевдоним
+и обращаться через поля с псевдонимоми таблицы
+есть только запросы SELECT UPDATE DELETE
+    INSERT в DQL нет
+
+При этом в Entity все поля к которым идет обращение в DQL должны быть отмечены как ORM\Column
+    Если у поля имя совпадает с зарезервированным словом то в сущности нужно указать ORM\Column(type="integer", name="`long`")
+
+Примеры
+    SELECT l.id, l.name, l.created, l.updated FROM AppBundle:Location l WHERE l.id > 1;
+    UPDATE AppBundle:Location l SET l.name='test2' WHERE l.id=1
+    DELETE FROM AppBundle:Location
+
+
+$em->createQuery($dql)->execute(); -- возвращает 0/1 для UPDATE\DELETE и массив результата для SELECT
+
+добавить параметр в symfony
+    parameters.yml
+        app.api_key: SomeApiKey
+    config.yml
+        parameters:
+            api_key: '%app.api_key%'
+
+    можно передать и в твиг
+        twig:
+            globals:
+                api_key: '%app.api_key'
+
+Обращаться через контейнер
+    $this->getParameter('api_key')
+
+@ORM\Column(type="string", nullable=true, uniqueConstraints=true) //делает поле уникальным индексным разрешая NULL значения
+
+Indexes
+Указывать в объявлении таблицы
+
+
+#для уникальных индексов
+
+@ORM\Table(name="my_table",
+    uniqueConstraints={
+           @ORM\UniqueConstraint(name="dimension_bitrate", columns={"video_dimension", "video_bitrate"}),
+           @ORM\UniqueConstraint(name="username_index", columns={"username
+    },
+
+    для простых индексов
+    indexes={
+         @ORM\Index(name="email_index", columns={"email"}, {unique=true}),
+         @ORM\Index(name="username_index", columns={"username"}, {unique=true})
+    }
+)
+
+в twig
+    {{ api_key }}
+
+отношения в Doctrine можно задавать как и в других фреймворках
+
+в доктрин к сущности можно подтягивать репозиторий - класс в которые выносяться методы для доступка к данным
+что бы потом не вызывать их в контроллере
+
+* @ORM\Entity(repositoryClass="BlogBundle\Entity\Repository\BlogRepository") - в сущности
+
+пример реализации репозитория
+
+namespace BlogBundle\Entity\Repository;
+
+use Doctrine\ORM\EntityRepository;
+
+class BlogRepository extends EntityRepository
+{
+    public function getLastBlogs($limit = null)
+    {
+        $qb = $this->createQueryBuilder('b')
+            ->select('b')
+            ->addOrderBy('b.created', 'DESC');
+
+        if (false === is_null($limit)) {
+            $qb->setMaxResults($limit);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getAll() {
+        //внутри можно так же напрямую обращаться к $this->_em
+        $em = $this->getEntityManager();
+
+        return $em->getRepository('AppBundle:Blog')->findAll();
+    }
+}
+
+
+use Doctrine\Common\Collections\ArrayCollection;
+
+class Category {    
+
+    /**
+     * @ORM\OneToMany(targetEntity="Post", mappedBy="category")
+     */
+    private $posts;
+
+    public function __construct() {
+        $this->posts = new ArrayCollection;
+    }
+
+     public function getPosts()
+    {
+        return $this->posts;
+    }
+    
+}
+
+если сущность зависит от другой то в JoinColumn нужно указывать nullable = false
+
+class Post {
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="Category", inversedBy="products")
+     * @ORM\JoinColumn(name="category_id", referencedColumnName="id")
+     */
+    protected $category;
+
+     public function getCategory()
+    {
+        return $this->category;
+    }
+
+
+     public function setCategory($category)
+    {
+        $this->category = $category;
+    }
+}
+
+Many To Many
+
+предпологаеться что одна сущность зависимая а одна владеющая
+
+ /**
+     * @ORM\ManyToMany(targetEntity="Author", inversedBy="books")
+     * @ORM\JoinTable(
+     *     name="book_author",
+     *     joinColumns={
+     *          @ORM\JoinColumn(name="author_id", referencedColumnName="id")
+     *    },
+     *    inverseJoinColumns={
+     *          @ORM\JoinColumn(name="book_id", referencedColumnName="id")
+     *    }
+     *)
+     */
+
+    private $authors;
+
+/**
+ * @ORM\ManyToMany(targetEntity="Book", mappedBy="authors")
+ */
+
+
+ Рекурсивные отношения
+ ManyToOne
+
+/**
+ * @ORM\Column(type="string")
+ */
+private $name;
+/**
+ * @ORM\OneToMany(targetEntity="Member", mappedBy="followee")
+ */
+private $followers;
+
+
+/**
+ * @ORM\ManyToOne(targetEntity="Member", inversedBy="followers")
+ * @ORM\JoinColumn(name="follower_id", referencedColumnName="id")
+ */
+private $followee;
+
+Many To Many
+
+/**
+ * @ORM\ManyToMany(targetEntity="User",  inversedBy="followees")
+ * @ORM\JoinTable(
+ *     name="followers",
+ *     joinColumns={
+ *          @ORM\JoinColumn(name="follower_id", referencedColumnName="id")
+ *     },
+ *     inverseJoinColumns={
+ *          @ORM\JoinColumn(name="followee_id", referencedColumnName="id")
+ *     }
+ * )
+ */
+private $followers;
+
+/**
+ * @ORM\ManyToMany(targetEntity="User", mappedBy="followers")
+ */
+private $followees;
+
+/**
+ * @ORM\OneToOne(targetEntity="StudioAddress", mappedBy="studio")
+ */
+
+private $address;
+
+/**
+ * One Address has One User.
+ * @ORM\OneToOne(targetEntity="Studio", inversedBy="address")
+ * @ORM\JoinColumn(name="studio_id", referencedColumnName="id")
+ */
+private $studio;
+
+
+SECURITY
+
+простейщая авторизация
+
+security.yml
+security:
+    encoders:
+        Symfony\Component\Security\Core\User\User: plaintext \\Можно algorithm: bcrypt cost: 13
+
+    providers:
+        in_memory:
+            memory:
+                users:
+                    user1:
+                        password: mypassword
+                        roles: 'ROLE_USER'  
+
+        in_db:
+            entity:
+                class: BlogBundle:User
+                property: username
+
+    firewalls:
+        main:
+            anonymous: ~
+            http_basic: ~
+
+    access_control:
+        - { path: ^/user_path, roles: 'ROLE_USER' }
+
+        можно указать roles: ['ROLE_USER', 'ROLE_STUDENT'] -- и при вхождении под хотя бы одну роль роут подойдет
+
+
+можно использовать несколько провайдеров данных:
+    providers:
+        chain_provider:
+            chain:
+                providers: [in_memory, user_db]
+
+    firewalls:
+        main:
+            provider: chain_provider
+
+
+авторизация через БД
+
+        main:
+            anonymous: ~
+        form_login:
+                  login_path: login
+                  check_path: login
+                  require_previous_session: false #что бы делать отсчет новой сессии
+
+        logout:
+            path: logout #что бы не вписывать вручную экшн в какой-то контроллер
+
+
+Entity\User
+    должен реализовать 2 интерфейса
+        \Serializablef
+        \Symfony\Component\Security\Core\User\UserInterface
+
+Что бы было коректное сохранение и доставание из сессии при авторизации нужно
+в User.php
+В методе 
+public function getUsername() {
+    return $this->email; //возвращать поле по которому пользователь авторизируеться
+}
+        
+created\updated
+@ORM\HasLifecycleCallbacks -- перед EntityClass
+
+/**
+ * @ORM\PrePersist          -- перед функцией которая будет записывать данные при persist  | created
+ */
+
+public function beforeCreate() {
+	$this->created = new \DateTime;
+	$this->updated = new \DateTime;
+}
+
+/**
+ * @ORM\PreUpdate 		    -- перед функцией которая будет обновлять данные при update 
+ */
+
+public function beforeUpdate() {
+	$this->updated = new \DateTime;
+}
+
+
+Валидация
+use use Symfony\Component\Validator\Constraints as Assert;
+
+и в сущности
+/**
+ *@ORM\NotBlank
+ */
+ $name;
+
+для уникального поля
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
+
+@UniqueEntity(fields={"email"}, message="This email is already in use")
+
+пример с metadata
+$metadata->addConstraint(new UniqueEntity(['fields' => 'username', 'message' => 'This username is already in use']));
+
+можно в message получить доступ к значению через {{ value }}
+
+@Assert\Length(
+     *     min=4, minMessage = "Your password must be at least {{ limit }} characters long",
+     *     max=8, maxMessage = "Your password cannot be longer than {{ limit }} characters"
+     * )
+
+{{ limit }}
+
+gmail настройки
+в настройках config.yml
+swiftmailer:
+    encryption: ssl
+    auth_mode: login
+
+
+    
+$this->getParameter('my.some.parameter') -- можно подгрузить параметр
+
+параметры храняться в yml
+    my.some.parameter: 1234
+
+конфиги можно импортировать
+
+imports:
+    - { resource: '@MyBundle/Resource/config/config.yml' }
+
+авторизация
+если 
+User implements AdvancedUserInterface
+
+то становяться доступны  методы через 
+
+public function isAccountNonExpired()
+{
+   # return false;
+    return true;
+}
+
+public function isAccountNonExpiredNonLocked()
+{
+   # return false;
+    return true;
+}
+
+public function isCredentialsNonExpired()
+{
+ #   return false;
+    return true;
+}
+
+public function isEnabled()
+{
+   # return false;
+    return $this->activated === self::USER_STATUS_ACTIVE;
+}
+
+повторения пароля
+->add('plainPassword', RepeatedType::class, [
+    'type' => PasswordType::class,
+    'first_options' => [
+        'label' => 'Password'
+    ],
+    'second_options' => [
+        'label' => 'Second Password'
+    ]
+])
+
+генерация пароля
+$password = $this->get('security.encoder_factory')->getEncoder($user)->encodePassword($data->getPassword(), $user->getSalt());
+
+проверка пароля из формы на соответствие старому
+$encoder->isPasswordValid($user->getPassword(), $data['current_password'], $user->getSalt()
+
+
+route и trailling_slash
+в симфони с завершающим слешем все очень плохо
+поэтому нужно или в паттерне его городить через defaults
+@Route("/blog{trailling_slash}", requirements={"trailling_slash": "/?"})
+
+что породит вот таких уродов
+*@Route("/test{slash}{id}{slash_again}", defaults={"id": 0}, name="test", requirements={"slash": "/?", "slash_again": "/?", "id": "(\d+)?"})
+
+или писать несколько роутов
+/**
+*@Route("/test{slash}", name="test_slash", defaults={"id": 0}, requirements={"slash": "/?"})
+*@Route("/test/{id}{slash}", name="test_full", defaults={"id": 0}, requirements={"slash": "/?"})
+*/
+
+покрывает:
+/test
+/test/
+/test/10
+/test/10/
+
+
+@Method({"GET", "POST"}) -- используеться в аннотации
+
+
+SQL в Symfony
+$conn = $this->getDoctrine()->getConnection();
+$conn->fetchAll('SELECT 1 FROM followers  WHERE follower_id=' . $user->getId() . ' AND followee_id=' . $id)
+
+пакеты используемы в примере блога
+doctrine/doctrine-fixtures-bundle
+doctrine/data-fixtures
+
+doctrine/doctrine-migrations-bundle
+doctrine/migrations
+
+Миграции
+doctrine:migrations:generate -- создать пустой класс миграции
+doctrine:migrations:diff -- создает миграцию из разницы сущностей и таблиц в бд
+doctrine:migrations:migrate -- применить все миграции
+doctrine:migrations:migrate YYYYmmddhhiiss -- применить до миграции
+doctrine:migrations:migrate prev -- откат до предыдущей
+doctrine:migrations:migrate first -- откат всех миграций
+doctrine:migrations:execute YYYYmmddhhiiss -- применить только эту миграцию
+doctrine:migrations:execute YYYYmmddhhiiss -- откатить только эту миграцию
+
+миграции должны применяться последовательно,
+так как при приминении migrate идет отсчет от последней в таблице до последней в файлах, и могут пропускаться более ранее даже если они не применены
+
+
+twig фильтры 
+    'now'|date('Y') -- встроенная метка времени
+    |date('c')
+    |length -- выводить длину коллекции
+
+    {{ parent() }} -- вызывать родительский блок в Twig
+
+Фикстуры
+composer require --dev doctrine/doctrine-fixtures-bundle
+
+подключить бандл фикстур в AppKernel.php
+$bundles[] = new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle();
+
+Пример Фикстуры
+
+
+namespace AppBundle\DataFixtures\ORM;
+
+use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Common\Persistence\ObjectManager;
+use AppBundle\Entity\User;
+
+class LoadUserData implements FixtureInterface
+{
+    public function load(ObjectManager $manager)
+    {
+        $userAdmin = new User();
+        $userAdmin->setUsername('admin');
+        $userAdmin->setPassword('test');
+
+        $manager->persist($userAdmin);
+        $manager->flush();
+    }
+}
+
+php bin/console doctrine:fixtures:load -- загрузить фикстуры
+
+ключ  --append при загрузке позволяет не затирать а добавлять данные
+
+если нужно между фикстурами передавать данные с учетом привязки нужно использовать 
+    Doctrine\Common\DataFixtures\OrderedFixtureInterface 
+и наследоваться от 
+    use Doctrine\Common\DataFixtures\AbstractFixture
+
+функции getOrder() - задает в каком порядке подгружаються файлы текстур
+
+пример
+
+class UserFixtures extends AbstractFixture implements OrderedFixtureInterface {
+    public function load(ObjectManager $manager) {
+        //....
+        $manager->persist($user);
+        $manager->flush();
+        $this->addReference('app-user', $user);
+    }
+
+    public fucntion getOrder() {
+        return 1;
+    }
+}
+
+class PostFixtures extends AbstractFixture implements OrderedFixtureInterface {
+    public function load(ObjectManager $manager) {
+        //...
+        $user = $this->getReference('app-user');
+        $user->addPost($post);
+    }
+
+    public fucntion getOrder() {
+        return 2;
+    }
+}
+
+в гетерах в сущностях можно задавать критерии для возврата результата
+например:
+
+namespace\Entity\Post
+.....
+
+у Criteria::expr() есть еще методы in(), notin(), gt и прочие
+
+public function getComments($needApprove) {
+    if ($needApproved) {
+        $criteria = Criteria::create()
+            ->where(Criteria::expr()->eq('status', Comment::STATUS_APPROVED));
+        return $this->comments->matching($criteria);
+    }
+
+    return $this->comments;
+}
+
+здесь идет проверка на флаг, и если флаг то фильтрует через критерию данные
+
+twig доступ к константе класса
+comment.status == constant('BlogBundle\\Entity\\Comment::STATUS_NOT_APPROVED')
+
+
+ChoiceType -- dropDown в форме
+$builder->add('isAttending', ChoiceType::class, array(
+    'choices'  => array(
+        'Maybe' => null,
+        'Yes' => true,
+        'No' => false,
+    ),
+));
+
+Валидация продолжение
+в Entity удобно создавать метод, так как тогда в одном месте все Constraint
+
+// use Symfony\Component\Validator\Mapping\ClassMetadata;
+public static function loadValidatorMetadata(ClassMetadata $metadata)
+{
+   $metadata->addPropertyConstraint('title', new NotBlank(['message' => '{{ value }} cannot be empty'])); -- добавить ограничение
+}
+
+типичные валидаторы
+NotBlank
+Type('integer') -- задать для целого числа
+Range([
+    'min' => 1, 'max' => 3,
+    'minMessage' => "Value must be not less than {{ limit }}",
+    'maxMessage' => "Value must be not greater than {{ limit }}"
+])); -- задает диапазон для значений
+
+new Length([
+    'min' => 1, 'max' => 3,
+    'minMessage' => "Value must be not less than {{ limit }}",
+    'maxMessage' => "Value must be not greater than {{ limit }}"
+]
+
+ Regex(['pattern'=>"/\d/", 'match'=>false, 'message'=>"Your name cannot contain a number"])
+    match - должно ли совпадать или не должно
+    pattern - regexp
+
+в анотации
+    @Assert\Regex(pattern="/^[0-1]?[0-9]:[0-1]?[0-9]/$/i")
+
+
+* @ORM\OrderBy({"create_time" = "DESC"}) -- задать сортировку для отношения
+
+подключение конфигурации для сервисов  service.yml :
+
+    BlogBundle\:
+          resource: '../../src/BlogBundle/*'
+          exclude: '../../src/BlogBundle/{Entity,Repository}'
+          public: true #делает сервис публичным
+
+пример создания сервиса
+
+namespace BlogBundle\Service;
+
+class MessageGenerator
+{
+    public function getSomeMessage()
+    {
+        $messages = [
+            'You did it! You updated the system! Amazing!',
+            'That was one of the coolest updates I\'ve seen all day!',
+            'Great work! Keep going!',
+        ];
+
+        $index = array_rand($messages);
+
+        return $messages[$index];
+    }
+}
+
+и использование
+
+postUpdate отрабатывает только если данные были изменены
+
+use BlogBundle\Service\MessageGenerator;
+
+public function testAction(MessageGenerator $messageGenerator)
+{
+    $message = $messageGenerator->getSomeMessage();
+    var_dump($message); die;
+
+    return new Response('Some text');
+}
+
+public function test2Action()
+{
+    //сервис должен быть публичным
+    $messageGenerator = $this->get(MessageGenerator::class);
+    $message = $messageGenerator->getSomeMessage();
+    var_dump($message); die;
+
+    return new Response('Some text');
+}
+
+Можно создавать свои EventListner и EventSubscriber
+зарегестрировать в сервисах
+
+BlogBundle\EventListener\PostListener:
+             tags:
+                 - { name: doctrine.event_listener, event: postPersist }
+                 - { name: doctrine.event_listener, event: postUpdate }
+
+namespace BlogBundle\EventListener;
+
+use Doctrine\ORM\Event\LifecycleEventArgs;
+
+class PostListener
+{
+    public function postPersist(LifecycleEventArgs $args)
+    {
+        $object = $args->getObject(); //полуть объект
+
+        // only act on some "Product" entity
+        if (!$object instanceof Post) {
+            return;
+        }
+
+        $objectManager = $args->getObjectManager();  //получить em
+        die("I'm at right place create");
+        // ... do something with the Product
+    }
+}
+
+в Symfony для пустого атрибута в Entity по умолчанию задаеться некое число в виде строки
+'100400600'
+тоесть как в Yii просто проверять на пустоту для запоминания не подойдет надо проверять на не принодлежность к числовой строке
+например
+
+if ($this->tags != $tags && is_numeric($this->oldTags)) {
+    $this->setOldTags($this->tags);
+}
+
+здесь идет проверка что значение в $this->oldTags - числовое
+в теории нужно сделать проверку
+if (is_string($this->tags) && is_numeric($this->oldTags)) {
+    $this->oldTags = $value;
+}
+
+при этом если будет присваиваться какая-то строка цифр то лучше при ее присвоении привести ее к float\int
+    $value = (float) $value;
+    $this->oldTags = $value;
+
+$this->denyAccessUnlessGranted('ROLE_ADMIN', null, 'Unable to access this page!');
+$this->denyAccessUnlessGranted(['ROLE_TEACHER', 'ROLE_TEACHER_ASSOCIATED']);
+
+по умолчанию  Symfony если пользователь не аутенфицирован и не имеет достаточных прав редиректит его на страницу логина
+что бы это изменить нужно
+
+security -> firewall  -> main
+
+                            entry_point: blog.entrypoint
+
+                            access_denied_handler: blog.accessdenied - из той же оперы меняем хердлер
+
+
+Twig без контроллера
+$content = $this->container->get('twig')->render('BlogBundle:security:403.html.twig', []);
+
+и в ответ
+return new Response($content, 200)
+
+Twig что бы динамически обратиться к ключу или значению переменной в ключе нужно взять ее в скобки
+{{ path((routeName), {(paramName): page}) }}
+
+Если в view используеться подзапрос к роуту и нужно получить имя подзапроса можно использовать такой код
+
+$stack = $this->get('request_stack');
+$masterRequest = $stack->getMasterRequest();
+$currentRoute = $masterRequest->get('_route');
+
+$request->isXmlHttpRequest();
+
+Команды
+генерация - generate:command
+            ->setName('app:test-command') -- имя по которому будет обращение в консоли (может отличаться от имени класса)
+            ->setDescription('Just my Test Command') -- описание
+
+класс команды может наследоваться или от Command - базовый функционал
+или от ContainerAwareCommand - тогда доступен доступ к сервисам через ->getContainer()
+
+ContainerInterface можно заинъектить в любой сервис
+например
+
+app.test_service:
+    class: AppBundle\Services\TestService
+    arguments: ['@service_container']
+    public: true
+
+class TestService {
+    protected $container;
+
+    public function __construct(ContainerInterface $container) {
+        $this->container = $container;
+    }
+
+    public function test() {
+        $em = $this->get('doctrine.orm.entity_manager');
+        return $all = $em->getRepository('AppBundle:Post')->find();
+    }
+}
+
+public function testAction() {
+    $test = $this->get('app.test_service');
+}
+
+kernel.project_dir -- корневая папка проекта
+что бы иметь доступ к $this->getParameter() - нужно инжектить контейнер интерфейс
+если в сервис приходиться инжектить данные то с 3.3 корректно инжектяться только объекты
+
+kernel.root_dif -- папка app
+kernel.environment
+
+скалярные данные не инжектяться!
+
+в симфони есть хелперы для рисования результата в консоли
+
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Helper\Table;
+
+Remember Me
+достаточно
+	security.yml
+	main:
+		#....
+		 remember_me:
+                secret:   '%secret%'
+                lifetime: 604800 # 1 week in seconds
+                path:     /
+
+и в форме поля
+	<input type="checkbox" name="_remember_me">
+
+$form->get('email')->addError(new FormError('There is no user with that email')) -- добавить ошибку в форму
+
+umask(0002); -- задать права на создаваемые приложением файлы
+    лучше всего впихнуть в app.php app_dev.php bin/consol для того что бы устонавливать нужные права на файлы
+    для симфони решение при работе с композером
+
+composer require knplabs/knp-paginator-bundle -- бандл для пагинации
+подключение 
+    new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
+config
+    knp_paginator:
+        template:
+            pagination: 'KnpPaginatorBundle:Pagination:twitter_bootstrap_v3_pagination.html.twig' # задать шаблон бутстрапа
+
+в контроллере
+     $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate($images,
+                            Request::createFromGlobals()->query->get('page', 1),
+                            4
+        );
+
+и в view
+    {{ knp_pagination_render(images) }} -- выведет список страниц
+
+    для настроек можно
+    1 - создать в vendor/knplabs/knp-paginator-bundle/Resources/views/Pagination/my_pager.html.twig
+    и прописать его в настройках  шаблона
+    еще можно создать инернационализацию в папке
+
+    vendor/knplabs/knp-paginator-bundle/Resources/translations/
+
+    менять интернационализацию можно в config.yml
+    parameters: locale
+
+Транзакции
+    $conn = $this->em->getConnection();
+    $conn->beginTransaction();
+
+    try {
+        $repo =  $this->em->getRepository('AppBundle:Message');
+        $message = $repo->find($id);
+        $this->em->remove($message);
+        $this->em->flush();
+        $repo->deleteMessageUser($id);           
+        $conn->commit();
+    } catch (\Exception $e) {
+        $conn->rollback();
+        throw $e;
+    }
+
+простой SQL похож на PDO если без NativeQuery
+
+$conn = $this->_em->getConnection();
+$sql = 'SELECT * FROM message m
+        LEFT JOIN message_user mu ON (mu.message_id = m.id)
+        WHERE m.id=?';
+$stmt = $conn->prepare($sql);
+$stmt->bindValue(1, $id);
+$stmt->execute();
+return $stmt->fetchAll();
+
+есть встроенные средства для insert\update\delete ...
+$conn = $this->getDoctrine()->getConnection();
+$conn->insert($table, $data);
+$conn->update($table, $data, $where);
+$conn->delete($table, $data);
+
+если в сервис нужно заинжектить класс из приложения то нужно указать путь от бандла
+visitor_provider:
+        class: AppBundle\Security\VisitorProvider
+        public: true
+        arguments: ['@AppBundle\Service\VisitorStorage']
+
+в Симфони можно реализовать свой провайдер данных для логина
+
+security.yml
+    providers:
+        visitor:
+            id: AppBundle\Security\VisitorProvider
+
+service.yml
+      visitor_provider:                                                                                         
+        class: AppBundle\Security\VisitorProvider
+        public: true
+        arguments: ['@AppBundle\Service\VisitorStorage']
+
+и сервис должен реализовывать интерфейс UserProviderInterface
+
+FileUpload example
+через контроллер
+
+в сущности добавить 
+ /**
+ * @ORM\Column(type="string", nullable=true)
+ * @Assert\File(mimeTypes={"image/jpg", "image/png", "image/jpeg"})
+ */
+private $image;
+
+
+//Create Action
+$image = $test->getImage();
+$fileName = md5(uniqid()) . '.' . $image->guessExtension();
+$image->move(
+    $this->getParameter('avatar_upload_directory'),
+    $fileName
+);
+$test->setImage($fileName);
+$em->persist($test);
+$em->flush();
+
+UpdateAction
+после загрузки в форму поместить пустой файл
+$test = $this->em->getRepository(Test::class)->find($id);
+$imageDir = $this->getParameter('avatar_upload_directory');
+$test->setImage(new File($imageDir . $test->getImage(), false));
+
+дальше то же что и выше
+
+свой сервер с инжектом string
+
+AppBundle\Service\FileUploader:
+        arguments:
+            $targetDir: '%brochures_directory%'
+        public: true
+
+почему-то так работает а если пытаться задать через имя то ошибка
+
+app.file_uploader:
+    class: AppBundle\Service\FileUploader
+     arguments:
+            $targetDir: '%brochures_directory%'
+        public: true
+
+можно проверить что путь подходит хоть под один зарегестрированный роут
+$collection = $this->router->getRouteCollection();
+$context = new RequestContext();
+$context->fromRequest(Request::createFromGlobals());
+$matcher = new UrlMatcher($collection, $context);
+try {
+    $ressult = $matcher->match($uri);
+    #$event->setResponse(new RedirectResponse($this->router->generate($this->redirectPageRoute)));
+} catch(\Exception $ex) {
+    //Do nothing go next
+}
+
+$this->generateUrl('route_name', ['id' => $id]) -- пример генерации роута из контроллера
+
+это почти как в стандартном ядре так что нужно ловить эксепшн
+
+если из эвента нужно редиректить на какой-то путь можно сделать 
+$event->setResponse(new RedirectResponse($this->router->generate($routeName)));
+
+на страницах которых нет в роутах токена то же нет, поэтому может вываливать эксепшн при проверке на права
+
+HTTP_REFERER
+$referer = $request->headers->get('referer');
+
+repeated type для пароля это просто коллекция которую можно прогнать через цикл
+{% for passwordField in form.plainPassword %}
+    {{ form_widget(passwordField, {'attr': {'class': 'field-input'}}) }}
+{% endfor %}
+
+к форме можно добавлять дополнительные поля которых нет в сущности
+нужно в опции указать mapped => false
+$builder->add('terms', CheckboxType::class, array(
+    'label'    => 'Show this entry publicly?',
+    'required' => true,
+    'mapped' => false,
+));
+
+можно достучаться до элемента массива по ключу
+arr[0]
+trim('/')|
+split('/')[1] -- split как в JavaScript
+first
+
+'csrf_protection' => false -- отключить токен в форме
+
+$form->get('firstname')->setData('John');
+
+form.field -- содержит разные свойства, основное vars
+через field.vars можно достучаться до label | value и прочим
+
+Choice Type -- может так же сделать radio_group
+->add('gender', ChoiceType::class, [
+    'choices' => ['Male' => 'm', 'Female' => 'f'],
+    'multiple'=>false,'expanded'=>true, // что бы сделать radio group
+    'label' => 'Gender', 'required' => false,
+    'placeholder' => false //отключить по умолчанию кнопку NONE
+])
+
+->add('gender', ChoiceType::class, [
+    'choices' => ['Male' => 'm', 'Female' => 'f'],
+    'multiple'=>true,'expanded'=>true, // что бы сделать radio group
+    'label' => 'Gender', 'required' => false,
+    'placeholder' => false //отключить по умолчанию кнопку NONE
+])
+
+
+getOneOrNullResult() -- что бы достать строку из QueryBuilder
+
+The verbatim tag marks sections as being raw text that should not be parsed.
+{% verbatim %}
+    <ul>
+    {% for item in seq %}
+        <li>{{ item }}</li>
+    {% endfor %}
+    </ul>
+{% endverbatim %}
+
+{{ form_start(searchForm, {'attr': {'@submit.prevent': 'searchProducts'}}) }} -- примеры внедрения в Vuejs в symfony
+{{ form_widget(searchForm.name, {'attr': {'v-model': 'name'}}) }}
+
+Collection Type разобраться 
+
+в Twig в каждом блоке свой набор переменных
+т.е есть в body (блок) определить переменную
+то в javascript (блок) она не доступна
+
+
+
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+
+//Анатация на защиту перед action
+/**
+ * @Security("has_role('ROLE_ADMIN')")
+ */
+
+//Способо защиты доступа из action
+$this->denyAccessUnlessGranted(['ROLE_TEACHER', 'ROLE_STUDENT'], null, 'Unable to access this page!');
+
+//Получить роли по пользователю
+$roles = $this->get('security.token_storage')->getToken()->getRoles();
+
+app.request.attributes.get('_route') -- получить текущий роут в twig
+
+для того что бы при использовании MySQL создать поле Timestamp нужно указать
+/**
+    @ORM\Column(type="datetime")
+    @ORM\Version
+*/
+
+@ORM\Column(type="string", options={"default": "0,1,2,3,4,5,6"}) -- задать в DOCTRINE default value
+
+Для удаления асоциативных сущнойстей в отношениях OneToMany нужно использовать свойство  orphanRemoval в анотации
+
+/**
+ * @ORM\OneToMany(targetEntity="WorkDayLesson", mappedBy="workDay", orphanRemoval=true)
+ */
+private $workDayLessons;
+
+теперь $workDayLesson->setWorkDay(null) -- удалит строку из базы 
+
+ Doctrine Query Build при использовании асоциации в Where можно просто передать id на вход
+ ->select('wd')
+->from('AppBundle\Entity\WorkDay', 'wd')
+->where('wd.user=:id') //здесь автоматически ищеться user с таким ID
+
+
+В twig нет WHILE поэтому приходиться делать что-то на подобии
+{% set raitingStart = 1 %}
+{% for i in raitingStart..userReview.grade %}
+    <span class="fa fa-star user-star" aria-hidden="true"></span>
+{% endfor %}
+
+Twig extension in Symfony 
+
+namespace AppBundle\Twig;
+
+class  AppExtension extends \Twig_Extension
+{
+    public function getFilters()
+    {
+        return [
+            new \Twig_SimpleFilter('nl2par', [$this, 'nl2parFilter'])
+        ];
+    }
+
+    public function nl2parFilter($text)
+    {
+        $specials = explode("\r\n\r\n", $text);
+        $res = '';
+        foreach ($specials as $special) {
+            $paragraph = trim($special, '\r\n');
+            if (strlen($paragraph)) {
+                $res .= "<p>{$paragraph}</p>";
+            }
+        }
+        return $res;
+    }
+}
+
+service.yml 
+
+app.twig_extension:
+        class: AppBundle\Twig\AppExtension
+        tags:
+          - { name: twig.extension }
+
+view.html.twig
+    {{ user.profileData.aboutMe |nl2par|raw }}
+
+Yaml::parse($yamlFile) -- специальный класс для парсинга конфигов 
+$this->getParameter('google')  -- в Yaml нельзя просто обратиться к google.id вместо этого можно обратиться к родительскому узлу а затем через элементы массива к дочерним
+Пример
+
+parameters.yml
+
+parameters:
+    .....
+    google:
+      oauth:
+        id: 'Here is some Id'
+        secret: 'fasdfads-3423-fas-43241312'
+$google = $this->getParameter('google');
+$google['oauth']['id'];
+
+
+Routing через php
+
+php_routing:
+    resource: 'path/to/routing.php'
+
+use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\Routing\Route;
+
+$collection = new RouteCollection();
+$collection->add('post_create', new Route('/create', [
+    '_controller' => 'AppBundle:Post:create'
+]));
+
+return $collection;
+
+В dql можно использовать подзапросы
+пример оптимизированого запроса -- достаеться пост \ автор и количество комментариев к посту
+
+'SELECT p, a, (SELECT COUNT(c.id) FROM AppBundle\Entity\Comment c WHERE c.post = p) cnt  
+                FROM AppBundle\Entity\Post  p
+                LEFT JOIN p.author a
+                WHERE p.id IN (:ids)'
+
+//В symfony что бы из консоли отослать email нужно жестко отправить spool
+$spool = $mailer->getTransport()->getSpool();
+$transport = $container->get('swiftmailer.transport.real');
+$spool->flushQueue($transport);
+
+Doctrine cascade Remove
+
+в главной сущности
+, cascade={"remove"}
+
+в зависимой
+@ORM\JoinColumn(name="post_id", referencedColumnName="id", onDelete="cascade")
+
+
+OptionResolver -- настройка 
+$resolver->setDefaults([
+    'data_class' => Post::class,
+])->setRequired('postTypes');
+
+form.field.vars.value
+form.field.vars.name
+form.field.vars.id
+
+$request->getContent() -- получить тело запроса 
+
+в Симфони есть несколько типов хуков доктрины
+LifecycleCallbacks -- те хуки которые выполняються при изминении сущности
+PreFlush\OnFlush\PostFlush -- хуки которые выполняються при транзакции (тоесть при изминении всех сущностей)
+
+$em->getUnitOfWork()->getScheduledEntityUpdates() -- колекция сущностей на обновление доступна в событии onFlush, postFlush
+$em->getUnitOfWork()->getScheduledEntityDeletions() -- колекция сущностей на удаление в событии
+
+$this->container->getParameter('kernel.environment') -- получить окружение
+
+обработчик на кастомное событие (custom events listener)
+
+service.yml
+    app.something:
+        class: AppBundle\Event\MyCustomEvent
+
+    app.listener.inner_mail:
+        class: AppBundle\EventListener\InnerMailListener
+        arguments: ['@doctrine.orm.entity_manager']
+        tags:
+           - { name: kernel.event_listener, event: app.something, method: onSomething }
+
+SomeController.php
+ /**
+ * @Route("/test-event")
+ */
+public function testEventAction()
+{
+    $message = new Message();
+
+    $body = 'Now your lesson will take place on 28 September at 11:10 AM.';
+
+    $author = $this->em->getRepository(User::class)->find(1);
+    $receiver = $this->em->getRepository(User::class)->find(2);
+
+    $message->setTitle('Lesson Time Changed')
+        ->setBody($body)->setStatus(Message::STATUS_VISIBLE)
+        ->setType(Message::TYPE_LESSON)
+        ->setLessonMessageType(Message::LESSON_TIME_CHANGED)
+        ->setAuthor($author)
+        ->setReceiver($receiver);
+//        $this->em->persist($message);
+
+//        $ed =  $this->get('event_dispatcher');
+    $this->ed->dispatch('app.something', new InnerMailEvent($message));
+//        $ed->dispatch('app.something', new InnerMailEvent($message));
+
+    die("test-event");
+}
+
+{% include ':user/partial:profile_data_type.html.twig' with {'form': form}%} -- подключить шаблон с переменной
+
+config yaml - 
+app.address: {lat: '40.71278', lng: '-74.00597', 'timeZone': 'America/New_York', address1: '', state: '', 'zipCode': null, 0: 'hello'}
+
+$config = $this->getParameter('app.address'); -- в контролере
+
+
+При создании обьекта он наполняеться данными так же и связанными -- получаеться прокси обьекта,
+если уже работаем с обьектом и подтяним его из репозитория, то используеться кешированный прокси обьекта,
+вернеться обьект не с теми данными что в бд
+для того что бы вернуть обьект к данным которые храняться в бд нужно
+$this->em->refresh($object)
+
+twig.parameters
+app.session
+
+
+/**
+* @Route("/post/view/{id}", name="post_view")
+*/
+public function actionView(Post $post) 
+{
+    dump($post); -- работает так же как и в Laravel    
+}
+
+Подзапросы либо в твиге либо при перехвате ядром исключения
+основной запрос - HttpKernelInterface::MASTER_REQUEST
+
+"incenteev-parameters": { -- сохранить parameters.yml -- при обновлении через композер
+    "file": "app/config/parameters.yml",
+    "keep-outdated": true
+},
+
+
+если работать с полем типа json_array
+то удобно в конструкторе присвоить этому полю пустой массив
+/** @ORM\Column(type="json_array", nullable=true) */
+private $additional;
+
+public function __construct() {
+    $this->additional = [];
+}
+
+public function getAdditionalByKey($key) {
+    return $this->additional[$key] ?? null;
+}
+
+public function setAdditionalKey($key, $value) {
+    $this->additional[$key] = $value;
+    return $this;
+}
+
+Logger Symfony использует Monolog
+В нем уже содержаться встроенные типы для логов разных уровней
+
+$logger = $this->get('logger');
+$logger->$logger->addRecord(Logger::EMERGENCY, $ex->getMessage(), ['exception' => $ex]);
+$logger->emergency($ex->getMessage(), ['exception' => $ex]);
+
+запись в лог для обработчика Emergency
+Настройка для этого обработчика
+monolog:
+    handlers:
+        emergency:
+            level:    emergency
+            type:     stream
+            path:     %kernel.logs_dir%/%kernel.environment%_emergency.log
+
+EasyAdminBundle -- в настройках можно использовать dql
+list:
+    dql_filter: 'entity.id > 2'
+
+Пути для view из разных бандлов
+Сначала ищеться по пути из внутренего бандла
+BlogBundle\Resources\views\dir_to\view.html.twig
+
+Потом из общей папки view
+app\Resources\BlogBundle\views\dir_to\view.html.twig
+
+в контролере и вьюшка надо использовать
+@BlogBundle/dir_to/view.html.twig
+
+
+{% extends '@Blog/main.html.twig' %} -- путь в твиге
+
+
+app.payment_fee_calculator:
+    factory:   'AppBundle\AppBundle\Service\Payment\FeeCalculator:create'
+    public: true
+
+создает сервис через фабрику, для синглтона
+
+{{ render(controller('AppBundle\\Controller\\Payment\\PartialController::sidebarAction', { user: app.user })) }}
+
+с ролями удобно довольно работать допустим есть 2 роли
+ROLE_TEACHER: ROLE_USER
+
+и есть действие когда нужно разделить проверка по ROLE_USER -- не подходит они оба имеют одну и ту же роль
+можно ввести общую роль и разделить и проверять по общей роли
+
+ROLE_TEACHER: ROLE_HUMAN
+ROLE_USER: ROLE_HUMAN
+
+/**
+ * @Security("has_role('ROLE_TEACHER') or has_role('ROLE_STUDIO')") -- 
+    можно сделать как на уровне контролера так и на уровне action
+ */
+
+
+if ($this->isGranted(['ROLE_TEACHER', 'ROLE_TEACHER_ASSOCIATED'])) -- проверка роли в action
+
+Вызвать экшен контроллера из другого экшена
+
+$response = $this->forward('AppBundle:Something:fancy', array(
+    'name'  => $name,
+    'color' => 'green',
+));
+
+if (!$form->isValid()) {
+	$children = array_keys($form->getData()); -- для валидации формы вручную
+	foreach ($children as $child) {
+	    $errs = $form->get($child)->getErrors(true, true);
+	    if ($errs->count()) {
+	        $errors[$child] = $errs[0]->getMessage();
+	    }
+	}
+}
+
+
+Для решения проблем с FOS
+fos_user:
+	db_driver: orm # other valid values are 'mongodb' and 'couchdb'
+	firewall_name: main
+	user_class: AppBundle\Entity\User
+	service:
+	    mailer: fos_user.mailer.twig_swift
+	from_email:
+	    address: "%mailer_user%"
+	    sender_name: "%mailer_user%"
+
+
+framework:
+    templating:
+        engines: ['twig']
+
+Custom Hydrator
+
+namespace AppBundle\Hydrators;
+
+use Doctrine\ORM\Internal\Hydration\AbstractHydrator;
+
+class ColumnHydrator extends AbstractHydrator
+{
+    protected function hydrateAllData()
+    {
+        return $this->_stmt->fetchAll(\PDO::FETCH_COLUMN);
+    }
+
+}
+
+$this->em->getConfiguration()->addCustomHydrationMode('COLUMN_HYDRATOR', ColumnHydrator::class);
+
+$cities = $this->em->createQuery($dql)->getResult('COLUMN_HYDRATOR');
+
+
+
+
+composer require symfony/assetic-bundle
+composer require patchwork/jsqueeze
+
+
+symfony инъекция аргументов в сервис с версией js 
+если не получаеться просто заиньектить аргумент ошибка - argument "$var" of method "__construct()" is type-hinted "string", you should configure its value explicitly 
+
+то нужно помимо конфига еще и в конструкторе задать default value
+Пример:
+app.twig_extension:
+  class: AppBundle\Twig\AppExtension
+  arguments:
+      $var: '%asset_version%'
+  tags:
+    - { name: twig.extension }
+
+class AppExtension extends \Twig_Extension
+{
+    private $someVar;
+
+    public function __construct($var = '1.23')
+    {
+        $this->someVar = $var;
+    }
+
+добавляет ключ к каждому элементу с путем через функцию asset -- решение с деплоем новых версий js и css
+
+framework:
+    assets:
+        version: 'v1.0.1'
+
+
+Voters -- способ защиты для фреймворка на подобии RBAC, пример лучше смотреть в документации
+суть в том что задавая разные имена, можно находить разные voter
+
+например MessageVoter -- иммет действия edit_message, а PostVoter -- post_voter
+тогда
+$this->denyUnlessGranted('edit_message', $message) -- будет вызывать MessageVoter
+$this->denyUnlessGranted('edit_post', $message) -- будет вызывать PostVoter

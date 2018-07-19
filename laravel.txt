@@ -1,0 +1,630 @@
+artisan serve -- запустить сервер
+artisan route:list -- список роутов
+
+routes/web.php -- файл в котором прописываются пути к роутам
+
+Route::get('/about', function() {
+    return view('test/about'); //отдаст на вывод файл resources/views/test/about.blade.php
+});
+
+view('test/about') можно записать в виде view('test.about')
+
+.env -- основной файл настроек (бд ключи к апи и прочее храниться здесь)
+
+blade основы:
+@ -- на подобии {% %} в Twig
+{{ }} -- для вывода переменной
+
+<ul>
+	@foreach ($items as $item)
+		<li>{{ $item }}</li>
+	@endforeach
+</ul>
+
+php artisan make:migration create_tasks_table --create=task -- создать миграцию создающую таблицу task
+artisan migrate -- поднять миграции
+
+php artisan migrate:rollback --step=1 -- откат на 1 миграцию назад
+php artisan migrate:refresh -- обновить миграции (отменяет все а потом поднимает все)
+php artisan migrate:reset -- отменить все миграции и почистить базу
+
+Larvel QueryBuilder
+DB::table('task')->get(); -- достать из таблицы все записи вернет в виде колекции StdClass
+DB::table('task')->f()->get(); -- отсортировать по id в обратном порядке
+DB::table('task')->find($id)
+
+
+если в action вернуть массив то автоматически ответ преобразуеться в JSON
+
+dd($data) -- отладочная функция дампит и прекращает использует VarDumper::dump()
+
+artisan make:model ModelName -m - с миграциями
+artisan tinker -- оболочка для взаимодействия с приложением
+App\Task::where('id', '>', 1)->get(); -- пример команды в оболочке
+Task::find($id) -- достать запись по id
+Task::pluck('field') -- вытащить коллекцию значений из базы по этому полю
+
+App\ModelName::all() -- достать все записи в виде коллекции
+App\Task::all()->first();
+App\Task::latest()->get() -- достать записи в обратном порядке
+
+composer dump-autoload -- для обновления автолода композера
+
+$task = new App\Task;
+$task->body = 100;
+$task->save();
+
+в модели можно сделать статический метод доступный на уровне класса
+public static function getData()
+{
+return [
+    1, 2, 3, 4
+];
+}
+
+или можно создать метод с префиксом scope и он будет доступен всем объектам
+public function scopeTest() //в модели
+{
+return 'TEST';
+}
+
+если к методу добавить префикс scope 
+
+$task = new App\Task;
+$task->test();
+
+Route::get('/tasks', 'TaskController@index'); -- пример использования контролера
+
+контроллер можно создать через
+artisan:make
+
+пример контролера
+
+namespace App\Http\Controllers;
+
+class TaskController extends Controller  
+{
+public function show($id) 
+{
+	$task = App\Task::find($id);
+
+	return view('tasks/new', compact('task'));
+}
+}
+
+User::findOrFail($id) -- или находит или 404
+
+блейд продолжение
+@yield('content') == {% block content %}{% endblock %}
+
+@section('content')				{% block content %}
+<h1>Hello, World</h1>			<h1>Hello, World</h1>
+@endsection						{% endblock %}
+
+@include('partials/nav') -- аналогично @include('partials.nav')
+
+php artisan make:controller ControllerName -r -- создаст контроллера по шаблону с методами для index\create\delete ...
+
+csrf_field() -- функция в blade что бы давать защиту для токена
+{{ csrf_filed() }}
+
+request()->all() -- вывести все переменные с запроса
+request(['title', 'body']) -- title, body из запроса
+
+protected $fillable = ['title', 'body']; -- указывает какие поля можно заполнять через request
+protected $guarded = []; -- указывает какие поля должны быть защищены в модели
+
+protected $timestamps = false; -- если в модели нет timestamp полей то отключать надо так, что бы автоматически не заполнялись
+
+$post = new Post;
+$post->title = 'New name';
+$post->save() -- пример сохранения модели
+
+или
+
+Post::create(request(['title']));
+
+пример viewAction
+
+Route::get('/posts/{id}', 'PostController@show')
+public function show($id)
+{
+	$post = Post::find($id);
+
+    return view('posts/show', compact('post'));
+}
+
+Route::get('/posts/post', 'PostController@show')
+public function show(Post $post)
+{
+    return view('posts/show', compact('post'));
+}
+
+Route::get('/show/{page?}', 'MainController@show') -- роут с необязательным параметром в функции show должно быть значение по умолчанию
+
+class MainController {
+    public function show($page=1) {
+
+    }
+}
+
+/show == /show/ -- будет вызов с параметром 1   -- конечный слеш автоматически обрезаеться как в Yii2
+
+Route::get('/show/{page}', 'MainController@show')->where(['page' => '\d+'])->name('my_route')->middleware('auth')
+
+Route::currentRoute();  -- получить текущие роуты
+Route::currentRouteName();
+Route::currentRouteAction();
+
+Route::middleware(['auth'])->group(function() {  -- группа роутов в простейшем варианте
+    Route::get('/logout', 'AuthController@logout')->name('logout');
+    Route::get('/profile', 'UserController@profile')->name('profile');
+    Route::get('/profile/edit', 'UserController@profileEdit')->name('profile_edit');
+});
+
+Post::orderBy('created_at', 'desc')->get();
+
+return redirect()->route('profile');
+
+
+Laravel отношения
+
+Post.php
+
+public function comments() {
+	return 	$this->hasMany(Comment::class);
+}
+
+Comment.php
+public function posts() {
+	return $this->belonsTo(Post::class);
+}
+
+доступ к коментариям
+$post->comments;
+
+доступ к посту
+$comment->post; 
+
+blade
+@section('body')
+	<h1>Hello, World</h1>
+@show
+
+работает как twig -- тоесть если в потомке не задана секция выведет из родителя
+
+
+@section('body')
+	<h1>CONTENT</h1> -- выведет содержимое только после применения директивы @yield('body')
+@endsection
+
+@yield('body')
+
+asset('js/main.js')
+
+валидация осуществляеться в контроллере через метод validate()
+
+$this->validate(request(), [
+	'title' => 'required'
+]);
+
+{!! $post->body !!} -- вывести текст без htmlspecialchars аналог {{ data|raw }} --twig
+
+$carbon->diffForHumans() -- отформатированный метод для даты в Carbon
+
+return redirect('/') -- отредиректит на url
+
+redirect()->route('all', ['id' => 100]) -- редирект на роут с параметрами
+
+в коллекции можно создавать новые элементы прям из модели
+$this->comments()->create(['body' => $body]) -- создать новую сущность к коллекции (в Laravel это нормальная практика так как патерн ActiveRecord 
+
+auth()->login($user) -- авторизация в laravel
+auth()->logout() --  логаут
+
+'password' => 'required|confirmed' -- поле пароль требует подтверждения из запроса с полем password_confirmation
+'email' => 'required|email|unique:users' -- уникальное поле email по таблице users
+
+'email' => 'required|email|exists:mysql.users' -- проверяет что в соединении mysql в таблице users по полю email существует нужная запись
+
+redirect()->home() -- редирект на домашнюю страницу 
+
+Auth -- фасад отвечающий за авторизацию
+
+Auth::attempt(request(['email', 'password'])) -- логин
+Auth::logout()
+
+Auth::user()->name 
+Auth::check()
+
+redirect()->home()
+
+Model::selectRaw('year(created_at), month(created_at)')->groupBy('year', 'month')->get()->toArray()
+
+В laravel ServiceProvider не много отличаеться от симфони по крайней мере
+AppServiceProvider вызывает функции которые будут при boot
+в ней можно впилиться в rendering отдельного шаблона и отдать нужную переменную пример
+
+AppServiceProvider::boot()
+
+view()->composer('layouts.sidebar', function($view) {
+    $view->with('archives', Post::archives());
+}); -- теперь в файле layouts/sidebar.blade.php доступна переменная $archives
+
+Post::archives
+public static function archives()
+{
+    return static::selectRaw('year(created_at) year, monthname(created_at) month, count(*) published')
+        ->groupBy('year', 'month')
+        ->orderByRaw('min(created_at) DESC')
+        ->get()->toArray();
+}
+
+public function scopeFilter($query, $filters) -- фильтр для модели
+{
+
+    if (isset($filters['month'])) {
+        $query->whereMonth('created_at', Carbon::parse($filters['month'])->month);
+    }
+
+    if (isset($filters['year'])) {
+        $query->whereYear('created_at', Carbon::parse($filters['year'])->month);
+    }
+}
+
+использование
+$archives = Post::latest()->filter(request(['month', 'year']))->get();
+
+@section('Some', 'Here is content of some section')
+
+db seeds -- аналог фикстур в Symfony
+
+php artisan make:seeder ProductsTableSeeder -- создать файл сидов database/seeds/ProductsTableSeeder.php
+
+public function run() -- метод из сида добавляющий данные 
+{
+    DB::table('products')->insert(['name' => 'Mini skirt black edition', 'title' => 'Mini skirt black edition','description' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna','price' => 35,'category_id' => 1,'brand_id' => 1,]);
+}
+
+после этого нужно зарегистрировать в  DatabaseSeeder сид на выполнение
+$this->call(ProductsTableSeeder::class);
+
+и можно вызывать через команду
+php artisan db:seed
+
+App\Category::all(['id', 'name']);
+    
+route('delete_category', ['id' => $item->id]) -- получить url по имени route
+
+для того что бы в форме отображались предыдущие введенные значения нужно пользоваться функцией 
+old('name')
+
+back() -- тот же редирект но с ошибками
+    
+Mail::raw('Some Message', function ($message){
+    $message->to('esgras@ukr.net');
+    $message->subject('Test Message');
+});
+
+Mail::send('emails/main/test', ['title' => 'Title1', 'content' => 'Hello, World'], -- шаблон и переменные в шаблон
+    function($message) {
+        $message->subject('New Test Letter')  -- здесь настраиваеться сообщение
+                ->to('esgras@ukr.net');
+    }
+);
+
+Mail::to($user)->send(new LetterClass($arguments)) -- способо отправки писем в Laravel
+$user - или объект или почта
+
+в шаблонах переменная $message зарезервирована
+
+php artisan make:mail LetterClass -- создать класс письма хранящийся в App\Mail
+в конструктор можно инъектить переменные, публичные переменные класса будут доступные в письме
+
+
+
+Auth::viaRemember -- работает непонятно как
+
+app\Http\Middleware -- здесь находяться middleware которые можно изменять и настраивать
+
+'email' => 'unique:users,email,'.$user->id -- валидация, здесь поле email уникально в таблице users при этом допускаеться текущее значение
+    
+AJAX
+в контролере Request::ajax() -- проверяет что запрос по ajax
+
+в view нужно использовать защиту 
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
+а в JS перед запросом ставить 
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+})
+
+request()->ajax() -- check if ajax
+
+$post->fill(request(['title', 'content'])); -- массовое заполнение модели (что бы использовать нужно задать $protected или $fillable)
+$post->save();
+
+Migrations
+
+$table->dropForeign('comments_post_id_foreign');
+
+для того что бы повешать 
+
+$table->integer('post_id')->unsigned();
+$table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade')->onUpdate('cascade');
+
+$comments = $post->comments()->paginate(1); -- сделать пагинацию по 1 элементу на странице
+
+$comments->links() -- сделает ссылки в view
+
+php artisan vendor:publish --tag=laravel-pagination -- создать view пагинации
+
+Debuger
+тcomposer require barryvdh/laravel-debugbar
+
+Обновить несколько полей модели
+$data = ['title' => $title];
+Test::find($id)->update($data)
+
+php artisan make:model App\\Http\\Models\\Post -m -- make model with namespace
+
+@if ($errors->any())
+    <div class="alert alert-danger">
+        @foreach($errors->all() as $error)
+            <li>{{ $error }}</li>
+        @endforeach
+    </div>
+@endif  
+
+
+Pagination
+php artisan vendor:publish --tag=laravel-pagination
+{{ $posts->links('vendor.pagination.bootstrap-4') }}
+
+Flash message
+
+request()->session()->flash('success', 'Post was updated')
+
+session()->flash('success', 'Some Text');
+
+@if(Session::get('success'))
+    {{ Session::get('succes') }}
+@endif
+
+@if (session('success'))
+    {{ session('success') }}
+@endif
+
+Sessions
+
+session('key', 'defaultValue') -- геттер
+session()->put('key', 'value') -- сеттер
+session()->has('key')
+session()->forget('key') -- удалить
+
+Original URL: http://www.example.com/index.php?id=100 
+Desired destination URL: http://www.example.com/100/ .htaccess syntax: RewriteEngine On RewriteRule ^([^/d]+)/?$ index.php?id=$1 [QSA] Rewrite URLs with query parameter to directory based structure, retaining query string parameter in URL subdirectory
+
+$errors->has('email')
+
+route('name') -- генерирует абсолютный url
+url()
+
+belongsTo(User::class)
+
+file upload -- Controller
+
+$file = $request->file('file');
+$file->move($pathUpload, $file->getClientOriginalName());
+
+abort($code) -- выкинуть Exception завершая скрипт
+abort(404)
+
+@parent -- работает как в Twig {{ parent() }}
+
+Laravel beforeSave -- есть стандартные события для моделей 
+creating/created retrived -- и прочие на подобии beforeSave или prePersist
+
+для того что бы с ними работать нужно
+
+впилиться в метод модели 
+public static function boot() {
+    parent::boot();
+
+    self::created(function($model) { -- после создания модели
+        dd($model->id);
+    });
+
+    self::creating(function($model) { -- перед созданием модели
+        dd($model);
+    });
+} 
+
+Observers -- можно задавать наблюдателей для модели -- тоесть выносить обработчики 
+для хуков creating/created ....
+в отдельный класс TestObserver
+
+можно зарегистрировать обработку или в boot модели
+//Test.php -- model
+public static function boot() {
+    parent::boot();
+
+    self::observe(TestObserver::class);
+}
+
+
+или в каком-то ServiceProvider в boot
+//TestServiceProvider.php
+
+public function boot() {
+    Test::observe(TestObserver::class);
+}
+
+
+
+Listener 
+EventServiceProvider в listen -- регистируються класс собития и хэндлеры на него
+
+php artisan event:generate -- создает классы событий и хэндлеров
+
+в класс Event в конструкторе можно иньектить свойства которые потом отдавать в listener
+
+RegisterEvent
+
+public $user;
+
+public function __construct(User $user)
+{
+    $this->user = $user;
+}
+
+RegisterListener
+
+public function handle(RegisterEvent $event)
+{
+    Mail::send('mail/register', ['user' => $event->user], function($message) use ($event) {
+        $message->subject('Register Success')->to($event->user->email);
+    });
+}
+
+в момент регистрации запускаеться событие
+
+event(new RegisterEvent($user));
+
+можно использовать события Eloquent
+
+например в EventServiceProvider
+
+function boot() {
+    parent::boot();
+
+    Event::listen('eloquent.creating: *', function($obj) { -- при создании любого обьекта модели отрабатывает
+          dd(func_get_args());
+    });
+}
+
+а еще можно создавать и вызывать свои произвольные события
+Event::listen('user.custom_event', $user);
+
+
+
+Faker -- пример
+$faker = Faker\Factory::create();
+$faker->sentence();
+$faker->paragraphs(5);
+
+App::make('service_name')
+
+$table->foreign('user_id')->references('id')->on('users') -- внешние ключи для миграций
+
+$user->products()->save($product)
+
+$this->belongsToMany( 'App\Models\BrewMethod', 'cafes_brew_methods', 'cafe_id', 'brew_method_id' ); -- первое поле внешний ключ в таблице на эту модель, второе внешний ключ в таблице на другую модель
+
+в обоих классах $this->belongsToMany()
+
+User.php
+
+public function roles() {
+    return $this->belongsToMany(Role::class, 'role_user', 'user_id', 'role_id');
+}
+
+Инъекция класса в blade что бы использовать статические методы
+
+class Helper {
+    public static function someHelp() {
+        return [1, 2, 3];
+    }
+}
+
+view.blade.php
+
+
+@inject('someHelp', 'App\Helpers\Helper')
+
+{{ $someHelp::someHelp() }}
+
+Schema::create('comments', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('body');
+});
+
+Schema::dropIfExists('comments');
+
+
+Migration add Column
+Schema::table('users', function(Blueprint $table) {  -- добавить поле в табличку
+    $table->string('hash')->nullable();
+});
+
+Schema::table('users', function(Bluepring $table) {
+    $table->dropColumn('hash');
+});
+
+php artisan migrate:make add_image_to_users --table="users"
+Создать миграцию для таблицы с загатовками
+
+Configuration
+config/file.php
+    return [
+        'key' => ['title' => 'Config Value']
+    ];
+
+Config::get('file.key.title', $defaultValue) == config('file.key.title')
+
+Config::set('file.key.title', $settedValue) == Config('file.key.title', $settedValue)
+
+env('CONFIG_VARIABLE') -- прочитать из файла .env значение переменной
+$_ENV -- массив с конфигами
+
+File Upload
+
+$file = $request->file('image');
+$file->move('upload/', $file->getClientOriginalName());
+
+app_path() -- хелпер для подпапки app/
+base_path() -- хелпер для папки проэкта
+
+
+Пример bind для сервиса 
+$this->app->bind(FileUploader::class, function($app) {
+    return new FileUploader(config('site.upload_dir'));
+});
+
+$request->only('title', 'content') -- достать из запроса массив только с полями title, content
+
+php artisan make:request
+
+
+ViewComposer -- создать класс
+namespace App\Http\ViewComposers;
+
+use Illuminate\View\View;
+
+class SidebarComposer {
+    public function compose(View $view) {
+        $view->with('var', 'Some data for variable');
+    }
+}
+
+и в сервис провайдере
+public function boot() {
+    // Illuminate\Support\Facades\View;
+    View::composer('view_file', 'App\Http\ViewComposers\SidebarComposer');
+}
+
+$query->where('title', 'LIKE', "%$search%");
+
+Создать хелпер функции для Blade
+
+1 Cоздать файл app\Http\helpers.php - в него поместить функции
+2 composer.json в autoload добавит блок "files": ["app/Http/helpers.php"]
+3 composer dumpautoload
+
+Для редиректа залогиненого пользователя от лишних страниц нужно
+изменить путь в Middleware
+RedirectIfAuthenticated 
+с /home на любой

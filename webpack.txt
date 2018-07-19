@@ -1,0 +1,78 @@
+import == require
+export == module.exports
+
+можно импортировать в фигурных скобках
+export function test() {
+	
+}
+
+import {test} from './test'
+
+можно даже несколько методов из одного файла
+
+export function test1() {
+	
+}
+
+export function test2() {
+	
+}
+
+import {test1, test2} from './tests'
+
+webpack --watch --следит за изминениями
+
+"scripts": {
+    "build": "node_modules/.bin/webpack",
+    "watch": "npm run build -- --watch" //делает то же что и build но только с watch при этом 4 ----
+  },
+
+
+var webpack = require('webpack');
+let Uglify = require('uglifyjs-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+
+var path = require('path');
+
+css-loader style-loader
+
+module.exports = {
+    entry: './src/main.js',
+    output: {
+        path: path.resolve(__dirname, './dist'),
+        filename: 'bundle.js'
+    },
+    module: {
+        rules: [
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader'] //включение css loader
+            },
+            {
+                test: /\.s[ac]ss$/,
+                use: ['style-loader', 'css-loader', 'sass-loader']
+            },
+        ]
+    },
+    plugins: [
+        new ExtractTextPlugin('[name].css') //плагин для извлечения текста в отдельные css
+        new webpack.LoaderOptionsPlugin({ //минимизирует (вырезая пробелы)
+            minimize: inProduction
+        })
+    ]
+};
+
+npm install --save-dev babel-loader babel-core
+
+module: {
+  rules: [
+    { test: /\.js$/, exclude: /node_modules/, loader: "babel-loader" }
+  ]
+}
+
+if (process.env.NODE_ENV == 'production') { -- включение только при подготовке к production
+    module.exports.plugins.push(
+        new webpack.optimize.UglifyJsPlugin()
+    );
+}
+

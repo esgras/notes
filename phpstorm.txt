@@ -1,0 +1,50 @@
+Global
+Alt + 1 - Проекты
+Alt + 7 - Навигатор
+Ctrl + Alt + K - Форматирование
+Alt + P - удаленый хост
+Ctrl + Y - удалить строку
+Ctrl + D - копировать строку
+Alt + F12 - терминал
+Ctrl + Shift + N - открыть файл \ папку
+Ctrl + Shift + F - глобальный поиск по проэкту
+Ctrl + Q - на переменной - документация
+Ctrl + Alt + , -- Settings
+Ctrl + Shift + / -- Закоментировать блок
+Ctrl + / -- Закоментировать строку
+Ctrl + Shift + Alt + A -- клонировать курсор вниз
+
+Shift+Shift -- поиск по файлам и выражению
+
+Ctrl + W -- выделить слово на котором курсор
+Ctrl + e -- открыть список недавно закрытых файлов
+
+Database
+Ctrl + Enter - Execute Query / Submit in Table Editor
+F4 			 - Table Editor (можно добавлять, модифицировать строки)
+Alt + Insert - Добавить новую строку
+Ctrl + Shift + F10 - Open Sql Console
+
+Ctrl + F4    - Close active Tab
+
+В редакторе - ПКМ -> Dump Data -> To File / To Clipboard -- импортировать данные в CSV / TSV
+
+VCS -> Local History -> Show History
+
+
+ALT+F7 - поиск использования класса
+Ctrl+Q - Документация по элементу	
+Ctrl+B - Навигация к обьявлению класса \ метода
+Ctrl + f12 - Навигация
+Shitf + F6 - Rename рефакторинг
+ALT + F1
+Shitf + Esc \ F12
+Ctrl + P - показывает список валидных операторов
+
+
+Debug 
+Start Listening, Make breakpoints, Enable extension in browser,
+Refresh page in browser
+If needed change Server configuration for PHP
+
+в конструкторе разместить курсор на переменной нажать alt+enter - выбрать initialize fields - создаст нужные поля в классе

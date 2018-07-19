@@ -1,0 +1,13 @@
+mysqldump -u user -p dbname > dump.sql  -- экспорт данных
+mysqladmin -u root -p create db1 -- создать базу данных
+mysqladmin -u root -p drop db1 -- удалить базу данных
+mysql -u user -p dbname < dump.sql
+
+use db
+show VARIABLES LIKE 'character_set_database' -- показать кодировку db
+show VARIABLES LIKE 'collation_database'     -- показать charset db
+
+GRANT ALL ON fooDatabase.* TO fooUser@’1.2.3.4’ IDENTIFIED BY ‘my_password’;
+
+CREATE USER 'remote'@'%' IDENTIFIED BY 'password'; -- создать пользователя без привязки по адрессу
+GRANT ALL ON *.* TO remote@’%’ IDENTIFIED BY '11111'; -- разрешить этому пользовтаелю все действия над базойe

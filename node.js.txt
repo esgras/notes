@@ -1,0 +1,117 @@
+require('./path.js') -- подключить модуль, обезательно указать от какой папки поиск, 
+						расширение не обезательно, сперва ищется .js затем .json затем директории я с таким именем и в ней ищеться файл index.js
+
+
+exports - объект экспорта, если модуль что-то должен вернуть но нужно это что-то писать в этот объект
+//user.js
+	exports.User = {name: 'User', age: 25};
+
+var user = require('./user.js');
+console.log(user.User);
+
+
+в модуле this -- ссылка на exports
+сам модуль - module
+
+globals -- объект глобальных переменных доступных в модулях (аналог window в браузере)
+module -- объект информаци о текущем модуле
+
+module.exports -- объект на который ссылаеться exports
+	внутри модуля this ссылаеться на module.exports
+	если нужно вернуть только функцию или одно значение то нужно присваивать в module.exports
+	module.exports = User
+
+module.parent -- указывает на объект родителя, если server.js -- пуста
+module.filename -- имя
+
+если задать require('db') -- то сперва проверяться что это встроенный модуль, 
+	если нет то пытаеться подгрузить из папки node_modules либо ищет через константу путей NODE_PATH
+
+переменные окружения -- то что задаеться через командную строку и доступно скрипту
+пример
+$> NODE_PATH=. node server.js -- здесь NODE_PATH - перменная окружения, указывающая что если модуля нет в node_moduel(core, main - из package.json) то искать в текущей директории 
+
+npm init
+npm s search -- ищет по репозиториям модулей через описание
+npm install modulename --save // --save -- добавить в package.json
+npm remove supermodule
+
+
+process.argv -- аргументы коммандной строки
+
+npm run command -- запускает комманду из раздела package.json -- scripts
+пример
+
+"scripts": {
+    "start": "node app.js"
+}
+npm start || npm run start -- запустит node app.js
+
+bower install --save package-name
+bower настройки храняться в .bowerrc
+	можно например забить директорию куда хранить
+		{
+  			"directory": "public/lib"
+		}
+
+app.use(express.static('directory')) -- сделать статическую папку (css/main.css | js/main.js)
+
+модуль util
+
+util.inspect(obj) -- вывести в строку представление объекта
+util.format("My %s %d", 'Some string', 123) -- почти как sprtinf в php
+util.inerist(child, parrent) -- теперь все объекты создаваемые child будут наследоваться от parrent
+
+console.log('Message') -- выводит в поток вывода
+console.error('Error') -- выводит в поток ошибок
+console.trace() -- выведет Stack trace
+
+window -- доступен, в вебпаке так точно в него можно вписывать нужные перменные и функции
+
+Webpack имеет множество плагинов
+	плагины что бы игнорировать файлы
+		new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /ru/) -- игнорировать все пути по шаблону кроме указаного 2-м параметром
+        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/) -- игнорировать все пути
+
+__dirname
+__filename -- текущий путь к модулю
+
+
+http 
+	http.createServer((req, resp) => {
+		resp.writeHead(200, {'Content-Type': 'text/html'});
+		resp.write('Some Content');
+		resp.write(`<h2>Query -> ${req.url}`);
+		resp.end(); // можно и сюда записать, обезательно должен завершить соединение иначе будет висеть до бесконечности
+	}).listen(port);
+
+	url -- модуль
+		ulr.parse(str) -- вернет объект парсинга (хост, домен, requestUri) ....
+
+	fs -- модуль для работы с файловой системой
+	пример
+		fs.readFile('filename', (err, data) => {
+			resp.end(data);
+		});
+
+Error.captureStackTrace(obj [, constructor]) -- сохранить стэк в свойстве объекта
+
+req.url
+req.method
+req.headers
+
+res.end('Finis response with text');
+res.write('some text')
+res.statusCode = 404;
+res.setHeader('cache-control', 'no-cache');
+res.removeHeader('cache-control');
+
+urlParsed = url.parse(req.url, true) -- распарсить строку запроса
+
+debugger;	
+
+fs -- module
+let str = fs.readFileSync(file) -- синхронное чтение файла
+
+fs.exists(path, callback)
+fs.stat()	

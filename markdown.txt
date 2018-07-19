@@ -1,0 +1,19 @@
+Markdown
+_text will be italic_
+**text will be bold**
+_**text will be both bold and italic**_ - порядок значения не имеет
+# - задает H1,2,3,4,5,6 - количество # указывает на размер H
+# Text - <h1>Text</h1>
+## Text2 - <h2>Text2</h2> и так далее
+
+Ссылки
+[Text](google.com) - <a href="http://google.com">Text</a>
+ССылочные ссылки
+[Text for link1][mylink1] - <a href="http://www.google.com">Text for link1</a>  - удобно держать саму ссылку в одном месте, внизу страници
+[Text for link2][mylink2] - <a href="http://www.yandex.ru">Text for link2</a>
+
+[mylink1]: www.google.com - не отображаються на странице
+[mylink2]: www.yandex.ru
+
+Images
+![alt text](http://host/linkt/to/image.png)

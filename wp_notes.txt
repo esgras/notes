@@ -1,0 +1,41 @@
+language_attributes()
+wp_head()
+bloginfo('charset') | stylesheet_url pingback_url name description
+wp_title('|', true, 'right')
+body_class()
+home_url()
+wp_nav_menu()
+wp_footer() //админ строка сверху добавляеться здесь
+is_home()
+is_front_page()
+the_ID()
+post_class()
+the_permalink()
+the_title_attribute()
+the_title()
+get_the_date()
+the_time()
+the_author_link()
+comments_popup_link('No comments', '1 comment', '%comments')
+is_singular()
+comments_template('', true)
+the_date('', '<h3 class="the-date">', '</h3>');
+get_post_format()
+
+add_action($hook_name, $func, [$priority, [$parameters]])
+add_filter($filter_name, $func)
+
+remove_action($hook_name, $func)
+remove_filter($filter_name, $func)
+
+add_option($key, $value)  update_option($key, $value)   get_option($key)   remove_option($key)
+
+DB - только MySQL
+$wpdb - global var
+dbDelta($sql) //для создания таблиц
+$wpdb->prepare($sql, $var1, $var2, $varN) -- на подобии printf
+	"SELECT * FROM posts WHERE id=%d"
+$wpdb->query($sql) // от prepare sql например
+get_current_taxanomy($intance)
+get_field_id('field_name')
+get_object_taxanomies('taxanomy')

@@ -1,0 +1,33 @@
+.container
+.row
+.col-md-offset-1
+.col-md-12
+.visible-xs-block
+.hidden-xs-block
+
+.text-muted .text-info .text-success .text-danger .text-warning
+.bg-muted .bg-info .bg-success .bg-danger .bg-warning
+
+.pull-left .pull-rigth .clearfix
+p.lead
+
+ul.list-unstyled .list-inline - список в строку
+
+.list-group .list-group-item -- позволяет сделать групповой список, .active - выделяет класс синим, 
+	.badge -- внутри list-group -- float:right
+	.list-group-item-heading
+	.list-group-item-text
+
+
+FORM:
+	.form-vertical, .form-horizontal .form-group .form-control .control-label .forn-inline
+	.checkbox -- специальный контейнер для checkbox
+
+	для горизонтальной формы используеться col-xs-10 col-xs-offset-2 например
+
+	<div class="form-group">
+		<label for="password" class="control-label col-xs-2">Password:</label>
+		<div class="col-xs-10">
+			<input type="text" class="form-control" id="password">
+		</div>
+	</div>
