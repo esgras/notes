@@ -1,0 +1,41 @@
+sudo su - postgres
+psql
+
+\l -- список баз данных
+\c database_name -- аналог use database_name
+\dt
+\d имя таблицы == DESC table name
+\du -- список пользователей
+\password user -- задать новый пароль пользователю
+
+createuser -dP blog
+createdb -E utf8 -U blog blog
+
+sudo -u postgres createuser --interactive -- создать пользователя под ролью,
+ в постгре пользователи привязаны к роли что-то на подобии учеток в системе
+
+sudo -u postgres createdb 8host -- нужно создать бд по имени роли, по умолчанию в постгре роли соответсвтуеют бд с именем роли
+
+sudo su postgres -- системный пользователь
+psql -- запустить консольный режим
+CREATE DATABASE blog;
+CREATE USER blog WITH password 'blog';
+GRANT ALL privileges ON DATABASE blog TO blog_user;
+CREATE DATABASE test_database OWNER test_user;
+DROP DATABASE test_db;
+DROP USER username;
+
+ALTER USER postgres PASSWORD 'asdf';
+
+ALTER USER synapse WITH ENCRYPTED password '11111';
+
+CREATE DATABASE synapse ENCODING 'UTF8' LC_COLLATE='C' LC_CTYPE='C' template=template0 OWNER synapse;
+
+
+pg_dump имя_БД > файл_дампа
+psql danceark < файл_дампа
+
+
+REVOKE ALL ON DATABASE postgres FROM test_user;
+REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM test_user;
+drop user test_user;

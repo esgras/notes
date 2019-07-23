@@ -107,6 +107,7 @@ php artisan make:controller ControllerName -r -- создаст контролл
 
 csrf_field() -- функция в blade что бы давать защиту для токена
 {{ csrf_filed() }}
+@csrf
 
 request()->all() -- вывести все переменные с запроса
 request(['title', 'body']) -- title, body из запроса
@@ -628,3 +629,5 @@ $query->where('title', 'LIKE', "%$search%");
 изменить путь в Middleware
 RedirectIfAuthenticated 
 с /home на любой
+
+{{ method_field('PUT') }} == @method('PUT')

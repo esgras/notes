@@ -11,3 +11,27 @@ GRANT ALL ON fooDatabase.* TO fooUser@’1.2.3.4’ IDENTIFIED BY ‘my_password
 
 CREATE USER 'remote'@'%' IDENTIFIED BY 'password'; -- создать пользователя без привязки по адрессу
 GRANT ALL ON *.* TO remote@’%’ IDENTIFIED BY '11111'; -- разрешить этому пользовтаелю все действия над базойe
+
+mysqldump -u root -pasdf danceark > /home/vayn/backups/`date +"%Y"-"%m"-"%d"_"%H":"%M"`_dump.sql
+
+CREATE USER 'newuser'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON * . * TO 'newuser'@'localhost';
+
+CREATE USER 'remote'@'%' IDENTIFIED BY 'password'; -- создать пользователя без привязки по адрессу
+GRANT ALL ON *.* TO remote@’%’
+
+UPDATE mysql.user SET authentication_string=PASSWORD('my-new-password') WHERE USER='root';
+FLUSH PRIVILEGES;
+
+UNINSTALL PLUGIN validate_password;
+
+SET GLOBAL validate_password_length = 4;
+SET GLOBAL validate_password_number_count = 0;
+SET GLOBAL validate_password_mixed_case_count = 0;
+SET GLOBAL validate_password_special_char_count = 0;
+
+
+sudo nano /etc/mysql/my.cnf
+[mysqld]  
+sql_mode = "STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
+sudo service mysql restart

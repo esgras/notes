@@ -60,7 +60,7 @@ app.use(express.static('directory')) -- сделать статическую п
 
 util.inspect(obj) -- вывести в строку представление объекта
 util.format("My %s %d", 'Some string', 123) -- почти как sprtinf в php
-util.inerist(child, parrent) -- теперь все объекты создаваемые child будут наследоваться от parrent
+util.inherits(child, parrent) -- теперь все объекты создаваемые child будут наследоваться от parrent
 
 console.log('Message') -- выводит в поток вывода
 console.error('Error') -- выводит в поток ошибок
@@ -115,3 +115,41 @@ let str = fs.readFileSync(file) -- синхронное чтение файла
 
 fs.exists(path, callback)
 fs.stat()	
+
+let data = require('./data.json'); -- подключить файл, теперь в data обьект
+
+fs.readFile('./data.json', 'utf-8', (err, data) => {
+	console.log(data) -- строка
+	console.log(JSON.parse(data).name) -- вернет значение из свойства
+});
+
+fs.readdir('/path/to/dir', (err, data) => {
+	console.log(data) -- массив элементов в папке без . ..
+});
+
+fs.writeFile('/path/to/file.txt', data, (err) => {
+	console.log('Show on end', err);
+});
+
+npm i -s express
+
+let express = require('express');
+let app = express();
+
+app.use(express.static(__dirname));
+
+let server = app.listen(8000, () => {
+	console.log('node listening at port ' . server.address().port);
+});
+
+let Emmiter = require('events'); -- внутрений наблюдатель за событиями
+let emmiter = new Emmiter();
+
+emmiter.on(eventName, (data) => {
+    console.log('First');
+});
+
+emmiter.emit(eventName, data);
+
+npm repo request -- открыть в браузере страницу пакета на github
+npm home request -- открыть домашнюю страницу пакета в браузере

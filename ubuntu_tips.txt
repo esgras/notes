@@ -31,3 +31,7 @@ SSH
 Ctrl + U -- исходный код в браузере
 Ctrl + H -- история
 Ctrl + J -- загрузки
+
+
+alsamixer
+sudo alsactl store

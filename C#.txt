@@ -1,0 +1,720 @@
+mono-mcs
+@if -- позволяет зарезервированному имение дать произвольный идентификатор
+
+/ -- деление на цело, ругаеться на неиспользуемые переменные
+
+10 / 3 -- 3
+10.0 / 3 -- 3.33333333333333
+
+@if
+
+char -- содержит симовл (точнее его код)
+char c = 'C'; -- c++ -- можно использовать операторы как для целочисленных типов
+
+есть foreach
+
+int[] sample = new int[10]; -- создание массива из 10 элементов
+
+int [,] table = new int[10, 20];
+
+int[] arr = {1, 2, 3, 4, 5}; -- инициализация массива
+int[,] arr = {
+	{1, 2},
+	{3, 5},
+	{8, 10}
+};
+
+int[][] arr = new int[3][]; // ступенчатый массив тоесть массив в котором под элементы могут иметь разную длину
+arr[0] = new int[4];
+arr[1] = new int[6];
+arr[2] = new int[8];
+
+arr.Length -- длина массива, при этом для двумерного вернет n * m элементов
+
+var jagged = new[] {                      -- через var можно обьявлять динамически инициализируемые переменные
+	new[] { 1, 2, 3, 4 },
+	new[] { 9, 8, 7 },
+	new[] { 11, 12, 13, 14, 15 }
+};
+
+str[0]
+str.IndexOf("First")
+str.LastIndexOf("Second")
+string.compare(str1, str2, StringComprasion.CurrentCulture)
+str1.ToLower(CultureInfo.CurrentCulture)
+str1.ToUpper(CultureInfo.CurrentCulture)
+str.Substring(5, 10)
+
+строки можно использовать в switch
+
+ref и out
+
+public int MinVal(params int[] nums) {
+
+перезагрузка методов
+public XYCoord(XYCoord obj) : this(obj.x, obj.y) {
+MyClass obj = new MyClass { Count = 100, Str = "Тестирование" };
+
+
+ref a -- передача аргумента в функцию по ссылке, изначально перменная должна быть инициализирована
+out a  -- тоже самое но переменная не должна быть инициализированна
+
+public void test(ref i) {
+	i = 5;
+}
+
+test(ref i);
+
+public void test2(out i) {
+	i = 10;
+}
+
+test2(out i
+
+public int MinVal(params int[] nums) { -- позволяет вызывать метод с переменным количеством параметров
+	for (int i = 0; i < nums.Length; i++)
+		Console.Write("param[{0}]={1} ", i, numbers[i])
+}
+
+можно задать обезательный аргумент а остальные ловить не обезательными
+static int Sum(string word, params int[] numbers) {
+	Console.Write(word + " ");
+	for (int i = 0; i < numbers.Length; i++)
+    {
+        Console.Write("param[{0}]={1} ", i, numbers[i]);
+    }
+}
+
+статические конструкторы предназначены для инициализации статических элементов класса
+
+можно перезагружать функции, для этого параметры на вход должны отличаться
+
+Class1.StaticMethodCall()
+
+Статические классы - те класс которые могут иметь только статические члены 
+
+перезагрузка операторов
+
+можно перезагружать операторы приведения к типу
+
+class Ob1 {
+	public static explicit operator int(ThreeD op1)
+	{
+		return op1.x * op1.y * op1.z;296
+	}
+//...
+}
+
+Ob1 ob1  = new Ob1;
+int i = ob1;
+Console.WriteLine((int) Ob1);
+
+в C# можно воспользоваться индексаторами и аксесорами - механизмом установки get, set в случае если пытаемся получить доступ к элементу массива выходя за его размер
+Индексаторы можно перезагружать
+
+
+public string displayName -- свойство позволяет изменить доступ к полю через доп сетер и гетер
+    {
+        get
+        {
+            return firstname + ' ' + lastname;
+        }
+        set
+        {
+            string[] res = value.Split(' ');
+            firstname = res[0];
+            lastname = res[1];
+        }
+    }
+
+
+string.Split(delimiter)
+base -- аналог parent
+
+function Teacher(string name, int age): base(age) {
+	this.name = name;
+}
+
+Для перекрытия родительских свойств в произовольном классе надо использовать new
+
+private new int x;
+
+консрукторы вызываються в порядке наследования
+
+от родителя и до потомка
+
+переопределение методов,
+для переопределения методов, в родительском классе они должны быть обьявлены как virtual
+а в дочернем классе обьявленны как override
+
+виртуальный метод не может быть обьявлен как static или abstract
+
+sealed -- аналог finall тоесть и класс и метод с этим ключевым словом не могут быть переопределены
+
+все классы наследуються от Object
+ob1.Equals(ob2)
+Object.Equals(ob1, ob2)
+ob1.ToString()
+ob1.GetType()
+
+Структура - подобие асоциативного массива
+структруа как и класс может иметь свои методы и свойства
+если одной переменной структуры происходит присваивание на другую структуры, то создаеться новая сруктруа а не присваивание ссылки
+
+
+
+Enum - перечисление структура данных удобная для сохранения диапазано констант внутри класса
+
+Exception.Message Exception.TargetSite Exception.StackTrace
+
+ConsoleModifiers.Alt | Shift | Control
+
+FileStream -- поток ввода для файлов
+FileMode.Open -- режим открытия
+
+FileStream fs = new FileStream(fileName, FileMode.Open);
+
+str.Trim() str.TrimStart() str.TrimEnd()
+str.Contains(substr)
+
+$"Hello, {name}. It's a pleasure to meet you!" -- интерполяция строк
+
+
+var date = DateTime.Now;
+
+$"Now is {date:d} at {date:t}" 
+
+Сборка .exe или .dll
+
+делегат - подобии функции Functional Expression в C#
+
+delegate string StrMod(string s);
+
+StrMod strOp = ReverseString; // ReverseString метод внутри класса, сигнатуры должны совпадать
+strOp('Some Text');
+
+аннонимные функции
+strOp = delegate(string s) { return s + "!!!!!!"; };
+strOp("Some String"); // Some String!!!!!!
+в аннонимных функциях применяеться замыкание
+
+Лямбда выражение - аналог стрелочных функций
+
+delegate bool IsEven (int n);
+
+IsEven isEven = n => n % 2 == 0
+
+события - члены класса 
+
+public event MyEventHandler SomeEvent; -- обьявление события SomeEvent с делегатом MyEventHandler
+
+if (SomeEvent != null)
+{
+    SomeEvent(); -- вызывать делегат
+}	
+
+evt.SomeEvent += Handler;
+evt.SomeEvent += xOb.Handler; //добавляем обработчик
+
+evt.SomeEvent -= xOb.Handler; //убираем обработчик
+
+namespace SomeSpace -- можно обьявить и использовать
+
+A is B -- аналог instanceof
+typeof -- применяеться к типам в Generics
+
+Обобщенные типы - специальные классы в которых на вход заходят аргументы разных типов к которым можно применять одинаковвые действия
+
+class Gen<T, V> {
+	private T ob1;
+	private V ob2;
+
+	public Gen(T o1, V o2) {
+		ob1 = o1;
+		ob2 = o2;
+	}
+}
+
+у обобщенных типов могут быть ограничения
+ограничение на класс обобщеного элемента, на интерфейс
+
+String.Join(delimiter, collection
+
+new Object.Method() -- нормальный вызов
+
+в C# конструкторы не наследуються по умолчанию, если классу нужно использовать родительный конструктор то его нужно переопределить например
+
+public Child(int x): base(x){}
+
+перед интерфейсами должен быть указан базовы класс
+class Child : Parent, IShow, IHello
+
+FileStream fs = new FileStream('file.log', FileMode.Create);
+for (char ch = 'A'; ch <= 'Z'; ch++)
+	fs.WriteByte((byte) ch);
+
+fs.Close(); // нужно обезательно закрыть иначе не будет записи в файл
+
+File.Copy(src, dest, overwrite = false);
+File.Exists(file)
+File.GetLastAccessTime()
+
+анонимные функции -- 
+
+delegate string StrFunc(string st);
+
+StrFunc strMod = delegate(string s) { return s.Replace(' ', '-'); };
+StrFunc strMod = s => s.replace(' ', '-');
+
+в C# анонимные функции и лямбда функции имеют замыкания уровнем в один контескст то есть могут обращаться к локальным переменным из той области где обьявлен но не выше
+
+using MyCounter = Counter.CountDown; -- аналог PHP use SomeNamespace\SomeClass as MyCounter;
+приэтом можно задавать псевдоним не только классу а целому namespace
+
+System.Linq  -- библиотека для работы с данными
+под данными принимаеться XML, SQL и даже массивы
+
+var nums = from x in numbers select x;
+
+foreach (int x in nums)
+	Console.WriteLine(x + " ");
+
+var webAddress = from addr in websites
+	where addr.LastIndexOf('.') != -1
+	group addr by addr.Substring(addr.LastIndexOf('.'))
+	            into ws -- создаеться временная переменная с которой можно позже работать
+	where ws.Count() >= 2
+	select ws;
+
+в Linq запросах можно использовать Join
+
+var myOb = new {Count = 100, text = "Hello, Object"}; -- аннонимный тип
+
+var byHow = from how in travelTypes
+	join trans in transports
+	on how equals trans.How
+	into lst
+	select new { How = how, Tlist = lst };
+
+String - Trim(), ToUpper(), ToLower(), Contains(), StartsWith(), EndsWith(), StartsWith(), EndsWith(), Replace(), Substring()
+Console.WriteLine("{0:f4}", floatValue);
+
+new Dictionary -- аналог ассоциативного массива
+
+var names = new List<string> {"Vayn", "Esgras"};
+names.Count;
+names.IndexOf("Vayn")
+
+В C# не нужно подключать другие файлы, вся информация содержиться в сборках
+
+Значение любого типа можно рассматривать как object
+
+Чтобы значения типов значений обрабатывались как объекты, выполняются операции упаковки-преобразования и распаковки-преобразования. 
+
+int i = 123;
+object o = i;    // Boxing
+int j = (int)o;  // Unboxing
+
+Если значение для типа значения преобразуется в тип object, то для хранения этого значения выделяется экземпляр object, 
+который также называется "упаковкой", и значение копируется в эту упаковку.
+И наоборот, если ссылка типа object используется для типа значения, для соответствующего object выполняется проверка, является ли он упаковкой правильного типа. 
+Если эта проверка завершается успешно, копируется значение этой упаковки.
+
+Упаковка - если значение типа значение преобразуеться в object, то выделяеться тип object (упаковка)
+если происходит преобразование ссылки типа object к значению типа значение, происходит сверка соответсвтия упаковки типу значения и копирование этой упаковки (распаковка)
+
+enum - создает отдельный тип
+
+Int32.Parse
+
+mcs -pkg:dotnet --  скомпилировать с Windows Forms
+
+int result;
+if (args.Length >= 1 && int.TryParse(args[0], out result))
+{
+    int x = Convert.ToInt32(args[0]);
+    int y = Int32.Parse(args[0]);
+    Console.WriteLine(x + " " + y + " " + result);
+}
+
+Console.ReadLine() -- возвращает строку
+Random.Next(min, max)
+
+File.OpenText("Program.cs").ReadToEnd() -- аналог file_get_contents($filename)
+
+using (StreamReader sr = new StreamReader("Program.cs"))
+        {
+            while (!sr.EndOfStream)
+            {
+                Console.WriteLine(sr.ReadLine());
+            }
+        }
+
+File.WriteAllText("file.log", str) -- аналог file_put_contents -- только для создания не может добавлять в конец
+File.AppendAllText("file.log", str); -- если файла нет создает иначе дописывает в конец
+new StackFrame().GetFileName()
+System.Environment.CurrentDirectory
+Contains -- indexOf
+
+При выполнении арефмитических операций где имеються переменные вернеться результат int
+byte b = 10;
+byte c = b + 5; -- будет ошибкой тип int не может обрезать к byte нужно делать это в ручную
+byte d = (byte) (b + c);
+
+неявные преобразование от меньшего к большему (implicit conversion)
+явные преобразование от большего к меньшему или явно (explicit conversion)
+
+при потери части данных в случае преобразования можно использовать слово checked
+
+byte z = checked((byte) (z + q)); -- если происходит потеря выбрасывает исключение
+
+Arr.GetUpperBound(dimension) -- получить индекс последнего элемента в массиве по измерению
+Arr.Rank -- ранг массива, для одномерного 1, для двумерного 2 ...
+
+int[,] arr = [5, 10];
+arr[0, 5];
+
+кортежи - альтернатива php list()
+
+(string name, int age) = loadData();
+
+static (string, int) loadData() {
+	return ("String", 28);
+}
+
+Инициализаторы для функций вызов
+add(x: 10)
+
+при создании объектов
+Person guest = new Person {name = "Vayn"}; // здесь используеться конструктор по умолчанию
+Person guest2 = new Person("Vayn") { age = 28}; // здесь используеться конструктор с одной переменной
+
+Строка - ссылочный тип, но при изминении строки создаеться новый объект, поэтому нужно острожно работать с ссылками на строку
+
+
+В классе (не в структуре) автосвойству можно присвоить значение по умолчанию
+
+public int Age { get; set; } = 28;
+
+поля только для чтения можно инициализировать как константу, а так же задать в конструкторе дальше менять нельзя
+
+public readonly string name = "Some Name";
+
+ссылочные типы могут принимать значение null
+
+?? -- если ссылочной переменной присвоено значение null то присвоить значение слева от операнда иначе значение справа напоминает php
+string str = null;
+string str2 = str ?? "TEST"; // str2 == "TEST"
+string str3 = str2 ?? "EMPTY"; //str2 == "TEST"
+
+string cityName = usr?.Address?.CityName ?? "Without City";
+
+?. -- проверяеть что  поля обьекта существует и ему присвоено значение
+
+as -- пытаеться преобразовать обьект одного типа к классу другого типа без выбрасывания исключения
+
+Person person = new Person("Tom");
+Employee emp = person as Employee;
+is -- аналог instanceof
+
+Методы класса Object
+ToString()
+GetHashCode() -- возвращает хэш значение которое позволяет сравнивать обьекты
+GetType() -- возвращает тип обьекта можно использовать для сравнения с typeof usr.GetType() == typeof(User)
+ob.Equals(ob2) -- говорит указывают ли 2 переменные на один и тот же объект
+ReferenceEquals -- аналог Equals с той разнице что он не может быть переопеределн
+MemberwiseClone -- неглубокая копия
+
+Кроме обобщенных классов могут быть обобщенные методы
+
+public void Show<T>(T value) 
+{
+	Console.WriteLine(T);
+}
+
+для задания значения по умолчанию в обобщении используеться default
+
+public General<T>() {
+	tValue = default(T);
+}
+
+Аноннимные типы:
+var user = new {Name = "Vayn", Age = 28}; -- после этого создаеться объект user при этом свойства его доступные только для чтения
+
+System.Text.Encoding.Default.GetBytes
+
+Директива using - позволяет создавать объект в блоке кода по окончании которого у объекта вызываеться метод Dispose и объект уничтожаеться
+
+StreamReader.ReadToEnd()
+StreamWriter.WriteLine()
+
+System.Environment.CurrentDirectory
+Path.GetFileName(System.Environment.CurrentDirectory);
+new StackFrame(true).GetFileName()  -- для отладочной информации
+
+Сериализация объектов
+для сериализации перед классом должен стоять атрибут [Serializable]
+
+BinaryFormatter formatter = new BinaryFormatter();
+formatter.Serialize(fileStream, data);
+
+data = (CastingClass) formatter.Deserialize(fileStream);
+
+String.Compare
+String.Contains()
+String.Concat() == +
+String.CopyTo()
+String.EndsWith() // startsWith()
+String.Format()
+String.IndexOf()
+String.Insert()
+Join
+String.LastIndexOf()
+String.Replace()
+String.Split()
+String.Substring()
+String.ToLower()
+String.ToUpper()
+String.Trim()
+String.Remove()
+
+Существует класс StringBuilder
+StringBuilder sb = new StringBuilder("Hello, Text");
+Он приминяеться для того что бы строке сразу задать нужную строку, применяться когда нужно думать об оптимизации роботы со строками
+
+Регулярка основы
+string str = "Helllo23234423 fasdfdasf2222";
+Regex reg = new Regex(@"\d+"); -- @ нужна что бы правильно распозновались слешы
+Regex reg2 = new Regex("text"); 
+MatchCollection matches = reg2.matches(str);
+
+if (matches.Length) {
+	foreach (Match match in matches) {
+		Console.WriteLine(match.Value);
+	}
+}
+
+Подзапросы представлены match.Groups -- при этом match.Groups[0] -- полное совпадение
+
+match.Groups[0].Value
+
+string str = new Regex(@"\d+").Replace(str, (Match match) => { return match.Replace('1', 'Z')}); == preg_replace_callback()
+
+Regex.IsMatch(pattern, text, RegexOptions.IgnoreCase)
+new Regex(@"\d+", RegexOptions.Singleline).Replace(, "fdsafasfadsf")
+
+using (Person p = new Person()) -- автоматические вызывает метод Dispose класса для освобождения ресурсов
+{
+}
+
+для этого класс должен реализовать интерфейс IDispose
+
+New DateTime(y, m, d)
+DateTite.Now
+DateTime.CompareTo(date1)
+
+System.Reflection.MethodInfo.GetCurrentMethod().Name -- имя испольняемого в данный момент метода
+
+Hashtable ht = new Hashtable();
+ht.Add("key", 100);
+
+ht.ContainsValue(val)
+if (ht.Contains("key")) {
+	
+}
+
+к элементу хэштаблицы можно обратиться через 
+ht["key"] -- только нужно приводить к нужному типу
+int x = (int) ht["key"];
+
+str.ToCharArray()
+
+mcs -r:/home/vayn/temp/mysql_mono/v4.5.2/MySql.Data.dll -r:System.Data.dll Test.cs  -- параметры для подключения MySQL
+
+Работа с MySQL
+using System.Data;
+using MySql.Data.MySqlClient;
+conn = new MySqlConnection(dns);
+conn.Open();
+MySqlCommand cmd = new MySqlCommand("SELECT * FROM posts", conn);
+MySqlDataReader rdr = cmd.ExecuteReader();
+while(rdr.Read()) {
+	Console.WriteLine(rdr["Id"] + " " + rdr["Date"] + rdr["Title"]);
+}
+
+rdr.Close();
+conn.Close();
+
+MySqlCommand cmd = new MySqlCommand("SELECT COUNT(*) FROM posts", conn);
+Console.WriteLine(cmd.ExecuteScalar()); //скалярный запрос
+
+MySqlCommand cmd = new MySqlCommand("DELETE posts WHERE id = @id", conn);
+cmd.Parameters.AddWithValue("@id", 1);
+cmd.ExecuteNonQuery()
+
+DateTime - нет автоматического перевода new DateTime(2018, 2, 29) -- выбрасит Exception
+DateTime dt = new DateTime(2015, 2, 21);
+dt.AddDays(), dt.AddYears(), dt.AddMonths(), dt.AddHours(), dt.AddMinutes(), dt.Add()
+dt.Substract(dateTime)  -- вычитание даты едиственный доступный вариант
+TryParse(str) Parse(Str)
+CompareTo(dateTime) -- сравнение, дата больше 1, равны 0, меньше -1
+dt.ToString("d-M-y H:m:s")
+dt.Year + "-" + dt.Month + "-" + dt.Year + " " + dt.Hour +":" + dt.Minute + ":" + dt.Second
+Все примитивы имеют метод TryParse(str, out val)
+
+В c# нежелательно под время итерации изменять коллекцию, для этого лучше создать новую коллекцию в которую позакидыать изминения а потом переприсвоить
+
+HttpUtility.HtmlDecode
+HttpUtility.UrlDecode
+
+C# методы наподобии array_*
+в C# можно применять для работы с коллекциями Linq это очень удобно
+string[] arr = {"first", "second", "third"}
+Select() -- возвращает IEnumerable объект реализующий интерфейс и его можно привести к
+ToArray(), ToDicteonary(), ToList()
+
+arr.Select(str => str.ToUpper()).ToArray()
+arr.Where(str => str.Length > 2)
+string str = arr.Aggregate(startValue, (total, next) => total + next );
+
+if (dt.ContainsValue(search)) {
+ 	string key = dt.First(pair => pair.Value == search).Key;
+ 	dt.Remove(key);
+}
+
+При поиске элемента в hashtable для удаления по ключу
+if (ht.ContainsValue(search)) {
+	foreach(DictionaryEntry dt in ht) {
+		if (dt.Value.Equals(search)) {
+			ht.Remove(dt.Key);
+			break;
+		}
+	}			
+}
+
+В любом классе можно объявить метод 
+public IEnumerator GetEnumerator() { -- теперь класс можно использовать в foreach 
+	foreach (int x in collection) {
+		yield return x;
+	}
+}
+
+foreach (int x in new Obj()) {
+	// do something
+}
+
+public IEnumerable GetCollection(int x) {
+	for (int i = 0; i < x; i++) {
+		if (i == x) yield break; // закончили перебор
+		else {
+			yield return coll[i];
+		}
+	}
+}
+
+JsonConvert.SerializeObject(p, Formatting.Indented) -- вместо var_dump
+
+
+Cast | OfType -- перевод Linq к коллекции
+
+IEnumerable<string> names = arrayList.Cast<string>().Where(n => n.Length < 7);
+foreach(string name in names)
+	Console.WriteLine(name);
+
+async await
+
+в C# могут быть асинхронные методы - это говорит о том что внутри метода может использоваться инструкция async
+
+static async void ReadWriteAsync(filename) 
+{
+	using (StreamWriter writer = new StreamWriter(filename, false))	{
+		await writer.WriteLineAsync("Some Text");
+	}
+
+	using (StreamReader reader = new StreamReader(filename)) {
+		string result = await reader.ReadToEndAsync();
+		Console.WriteLine(result);
+	}
+}
+
+static void Main() {
+	ReadWriteAsync();
+
+	Console.WriteLine("Some Work"); //выполняеться сразу а ReadWriteAsync -- по мере результата
+}
+
+from user in users
+from lang in user.Languages
+where user.Age > 25            
+where lang == "английский"    -- более сложная выборка
+select user;
+
+можно объявить временную переменную через let
+
+from u in users
+let name = u.Name
+select new {Name = name + "!", Age = u.Age + 5}
+
+можно делать динамические выоборки из нескольких объектов
+var people = from user in users
+    from phone in phones
+    select new {Name = user.Name, Phone = phone.Name};
+
+coll.Except(coll2)
+coll.Intercect(coll2)
+coll.Unino(coll2)
+
+arr.Concat() -- объеденить с массивом
+arr.Distinct() -- удалить дубликаты
+
+arr.Aggregate -- метод для агрегатных действий
+arr.Aggregate((x, y) => x + y)
+arr.Count() 
+arr.Average() -- можно задать лямбду
+arr.Sum() -- можно задать лямбду
+arr.Min() -- можно задать лямбду
+arr.Max() -- можно задать лямбду
+
+arr.Take(5) -- взять 5 элементов
+arr.Skip(3) -- взять выборку без 3-х первых элементов
+string[] posts = allPosts.Skip(5 * 10).Take(10); -- пример постранички
+SkipWhile(el => el.StartsWith('N')); -- пропускать элементы которые подходят под условие
+TakeWhile(el => el.StartsWith('N')); -- взять элементы удовлетворяющие условию
+
+
+GroupBy
+group by - если он задействован select не приминяеться
+
+var groupPhones = from phone in phones
+                  group phone by phone.Company;
+
+var groupPhones = phones.GroupBy(p => p.Company);
+
+foreach (IGrouping<string, Phone> g in groupPhones)
+{
+    Console.WriteLine(g.Key);
+    foreach (Phone phone in g)
+    {
+        Console.WriteLine(phone.Name + " " + phone.Company);
+    }
+}
+
+var groupPhones = from phone in phones
+                group phone by phone.Company
+                into g
+                select new {Name = g.Key, Count = g.Count()}; // можно результаты выборки запихнуть в результирующий объект
+
+foreach (var group in groupPhones)
+{
+	Console.WriteLine(group.Name + "=" + group.Count);
+}
+
+var groupPhones = from phone in phones
+                group phone by phone.Company
+                into g
+                select new
+                {
+                    Name = g.Key, 
+                    Count = g.Count(),
+                    Phones = from p in g select p.Name -- можно применять вложенные подзапросы
+                };

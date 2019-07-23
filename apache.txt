@@ -6,3 +6,19 @@ a2enmod mpm_itk
 <IfModule mpm_itk_module>
     AssignUserId user-www user-www
 </IfModule>
+
+apachectl configtest 
+
+<VirtualHost *:80>
+   ServerName 28dney.ru
+   Redirect / https://28dney.ru/
+</VirtualHost>
+<VirtualHost *:443>
+   ServerName 28dney.ru
+   DocumentRoot /home/admin/web/28days/project/web
+   ErrorLog  /home/admin/web/28days/error.log
+   CustomLog /home/admin/web/28days/access.log common
+   SSLEngine on
+   SSLCertificateFile /home/admin/web/28days/ssl/28dney.crt
+   SSLCertificateKeyFile /home/admin/web/28days/ssl/28dney.key
+</VirtualHost>

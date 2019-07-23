@@ -318,6 +318,10 @@ $em->createQueryBuilder()
 
         ->getSingleScalarResult() -- вернет одно скалярное значение из результата
 
+
+getSingleResult() -- вернет только первую строку удобно например в виде
+SELECT MAX(a.o), MAX(a.b)
+
 $qb->setFirstResult($offset) -- установить offset
 $qb->setMaxResults($limit); -- установить LIMIT
 $db->addOrderBy('b.created', 'DESC');
@@ -1735,3 +1739,12 @@ Voters -- способ защиты для фреймворка на подоб�
 тогда
 $this->denyUnlessGranted('edit_message', $message) -- будет вызывать MessageVoter
 $this->denyUnlessGranted('edit_post', $message) -- будет вызывать PostVoter
+
+
+$this->forward('AppBundle\Controller\PartialController::progressBarAction', [
+   'user'  => $entity
+])  ----   обращение к методу другого контролера
+
+$response = new Response('Drop cookie');
+$response->headers->clearCookie(ConstantHelper::DISCOUNT_COOKIE_KEY); -- удалить куку
+return $response;

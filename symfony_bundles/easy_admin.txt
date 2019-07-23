@@ -1,1 +1,12 @@
 {property: 'id', type_options: { disabled: true }} -- to make field not editable
+form:
+	{property: 'id', css_class: 'some-class', type_options:  {attr: {class: 'tinymce'}}} -- задать класс контейнеру в форме и элементу
+
+	- { property: 'parentPage', type: 'entity', 
+		type_options: { class: 'AppBundle\Entity\CompanyPage', 
+		multiple: false, 
+		attr: { data-widget: 'select2' }, query_builder: ['AppBundle\Repository\CompanyPageRepository','findNames'] }  -- можно обращаться к статическому методу, на входе в методе есть EntityRepository от формы
+	}
+
+
+	- { property: 'content', type: 'FOS\CKEditorBundle\Form\Type\CKEditorType', config: {toolbar: 'basic'}} -- обращение к произвольному классу FormType

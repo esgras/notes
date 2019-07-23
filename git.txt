@@ -54,3 +54,18 @@ git stash clear - очистить список изменений
 git merge --abort -- скинуть мердж
 
 git update-index --assume-unchanged -- отключить из отслеживания файл
+
+git config --global http.sslVerify false -- убрать проблемы с гитом если проблема с подключением
+
+git reset filename -- отменить команду git add filename
+
+git reset + git checkout -- отменить изминения в файле до пред коммита
+
+git push origin --delete remote_branch_name -- удалить ветку удаленно
+
+git reset --mixed file -- отменить git add, изминения остались в файле
+
+git symbolic-ref HEAD -- показать ветку
+
+git rebase --abort
+git merge --abort

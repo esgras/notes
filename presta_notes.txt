@@ -1,3 +1,5 @@
+?fc=module&module=vwbtest&controller=test -- достучаться до фронт контролера
+
 Tools::isSubmit('element')
 Tools::getValue($key[, $defaultValue]) -- ищет в POST затем в GET false если пусто
 
@@ -26,7 +28,7 @@ pSQL($text) -- экранирование текста
 
 Hooks
 Hook::exec('displayProductTabContent') -- вызвать хук в контролере
-{hook	h='hookName'} 		       -- вызвать хук в Smarty 
+{hook	h='hookName' product=$product } 		       -- вызвать хук в Smarty 
 
 Hook::exec('displayExample',	array('val1'	=>	23,	'val2'	=>	'Hello')) с передачей параметров
 
@@ -176,3 +178,8 @@ $this->context->controller->addJS($this->_path . 'views/js/myscript.js');
 В модуле можно задать метод function onClickOption($type, $href = false) {}
 	здесь $type - configure, disable, reset, delete
 	$href - ссылка на action на который кликнули
+
+
+можно поставить защиту на модуле от удаления
+есть функция
+onClickOption( ) -- в Module.php рыть в ее сторону

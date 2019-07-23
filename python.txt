@@ -11,7 +11,7 @@ A = Y if X else Z
 
 NULL == None
 TRUE == True
-FALSE == FALSE
+FALSE == False
 
 dict.items()
 
@@ -54,14 +54,18 @@ from filename import function_name -- импорт в глобальное пр�
 form filename import *
 
 при запуске среда хранит имя выполняемого файла (модуля )
-__main__ -- здесь содержиться имя выполняемого файла
+__name__ -- здесь содержиться имя выполняемого файла
+
+если находимся в модуле то
+__name__ == '__main__'
 
 try:
 except ExceptionClass:
+# except ExceptionClass as ex:
 finally:
 
 arr = [1, 2, 3, 4]
-arr2 = list(arr) -- клонировать массив, массив передаеться по ссылке
+arr2 = list(arr) -- клонировать массив, создаеться копия массива
 
 отрицательный индекс - номер элеманта с конца
 arr[-1] == 4
@@ -75,6 +79,9 @@ i = 0
 while i < len(arr):
     print(arr[i])
     i += 1
+
+for i in range(len(arr)):
+	print(arr[i])
 
 len(arr) -- длина массива
 
@@ -100,7 +107,7 @@ reverse(): расставляет все элементы в списке в о�
 
 len(list): возвращает длину списка
 
-sorted(list, [key]): возвращает отсортированный список
+sorted(list, [key]): возвращает отсортированный псисок
 
 min(list): возвращает наименьший элемент списка
 
@@ -132,10 +139,23 @@ array_filter() -- filter(f, iterrableObject)
 array_values() -- dict.values()
 array_keys() -- dict.keys()
 
+dict(dict1, **dict2) == array_merge
+
+
+dict([('x', 100)]) == {'x': 100}
+x = 'a'
+c = {x: 100} -- {'a': 100}
+
 for item, key in dict.items()
 
 if el in arr:
 	print(True)
+
+
+число к массиву цифр
+val = 1234
+lst = list(str(val)) #['1', '2', '3', '4']
+lst = [int(i) for i in str(val)] # [1, 2, 3, 4]
 
 Модуль copy -- функция deepcopy
 arr = copy.deepcopy(arr2)
@@ -144,11 +164,13 @@ arr2 = arr[2:] -- скопировать начинаю я элемента arr[
 arr2 = arr[2:5] -- скопировать с arr[2] по arr[5] -- не включительно
 arr2 = arr[:5] -- до arr[5] -- не включительно
 
+strrev == str[::-1] -- начиная с 0 позиции и до последней вернуть копию с шагом 1 в обратном направлении
+
 Кортеж -- неизменяемый массив
 tup = (1, 2, 3)
 tup = tuple([1, 2, 3]) 
 из функции можно вернуть кортеж
-def func():
+def func():	
 	return 5, 10
 
 x, y = func()
@@ -198,6 +220,10 @@ st3 = frozenset(st2) -- множество которое нельзя меня�
 
 import os
 os.path.isfile(file)
+os.path.exists(path)
+os.path.getsize(filename)
+
+os.mkdir(path)
 
 mode - r w a b
 
@@ -205,6 +231,7 @@ with open(file, mode) as myfile: -- автоматически закроет
 	print(myfile.readline())
 myfile.write('Some Text') -- записать файл
 myfile.read() -- прочитать полностю файл
+myfile.flush() -- моментально записать 
 truncate()
 seek()
 
@@ -232,7 +259,7 @@ str = '1234'
 rawBytes = str.encode(encoding)
 str = rawBytes.decode(encoding)
 
-str.split(' ') -- разбить строку полчить массив
+str.split(' ') -- разбить строку получить массив
 
 
 arr = [1, 2, 3]
@@ -253,7 +280,14 @@ os.getcwd() -- текущая директория
 os.path
 os.isdear()
 os.isfile()
+os.listdir(path) -- аналог scandir
 __file__
+abs_path = os.path.abspath(path)
+dirname = os.path.dirname(path) == __DIR__
+basename = os.path.basename(path)
+file = __file__
+ext = os.path.splitext(path)[-1]
+
 
 import glob
 glob.glob('*') -- список всех файлов и директорий
@@ -269,3 +303,130 @@ time.gmtime()
 import re
 pattern = '^M?1$'
 re.search(pattern, string)
+
+re.findall(pattern, string)
+re.sub(pattern, replace, string)
+re.split(pattern, text)
+
+search = '\[if\s+' + key + '](.*)[/endif]'
+text = re.sub(search, r'\1', text) -- обратиться к корману в замене \1
+re.sub(search, r'\1', text, flags=re.S | re.UNICODE) -- с использованием флагов
+re.S -- точка так же обозначает новую строку
+
+
+sys.exit() -- убить программу
+from pprint import pprint
+pprint -- удобная для форматированния замена print
+
+если  у нас объект удобно выводить
+pprint(vars(obj))
+
+если другой тип
+pprint(var)
+
+
+str.lstrip(chars_string or None) -- аналоги trim
+str.strip(chars_string or None)
+str.rstrip(chars_string or None)
+
+x is y -- проверяеть что x ссылаеться на тот же объект что и y
+
+requests модуль
+
+
+
+OOP
+class Cls(self):
+	count = 0
+
+
+	def __init__(self):
+		# constructor
+		self.__name = ''
+
+	@property
+	def name(self):
+		return self.__name
+
+	@name.setter
+	def name(self, name):
+		self.__name = name #setter
+
+	@staticmethod
+	def add(x, y):
+		return x + y
+
+Cls.count -- статический элемент
+Констант нету
+
+isinstance(obj, Class)
+
+super() -- обратиться к родителю из методов наследника
+
+
+Статические методы
+   @staticmethod -- бесполезный метод ничего не знает об контексте
+   def 
+
+   @classmethod -- получает 1-м параметром ссылку на класс, можно использовать как нормальный статический метод
+   def add(cls):
+   		cls.count += 1
+
+Cls.__dict__ -- показывает перечень свойств класса
+result = function(*param_arr)
+
+hasattr(cls, 'name')
+
+json
+import json
+
+json.loads(str) -- строку  из json в данные python
+json.dumps(data) -- строку из python в json
+
+dir() -- возвращает имена доступные в локальной области
+dir(el) -- показывает атрибуты указаного объекта в алфовитном порядке
+locals() -- тоже что и dir только со значениями переменных, словарь
+
+
+import datetime
+datetime.date() -- дата
+datetime.time() -- время
+datetime.datetime() -- дата время
+datetime.dateime.strptime('2019-04-09', '%Y-%m-%d')
+dt = datetime.datetime.now()
+dt.year dt.hour
+
+dt = datetime.datetime.strptime("22-02-11", "%d-%m-%y") #распарсить дату к дата время
+%d -- день, %m -- месяц, %y -- год 2 цифры, 
+%Y -- год 4 цифры, %M -- минуты, %H -- часы, %S -- секунды
+
+dt.strftime("%Y-%m-%d") # аналог date() 2019-02-12
+
+def func(x, *args, **kwargs):
+	print(x)
+	for el in args:
+		print(el)
+	for key, el in kwargs:
+		print(f'kwargs[{key}]={el}'')
+
+test(100, 10, 20, 30, 40, g=100, y=200, z=300, last=100) // x=10, args=[10, 20, 30, 40], kwargs={'g': 10, 'y': 200, 'z': 300, 'last': 100}
+
+
+split vs rsplit
+split -- разбивает строку в список, разделения идут слева
+rsplit -- тоже самое разделения справа
+
+"The string split, a Python method, for breaking strings".split(',', 1) == ["The string split", " a Python method, for breaking strings"]
+"The string split, a Python method, for breaking strings".rsplit(',', 1) == ["The string split, a Python method", "for breaking strings"]
+
+getattr(obj, field.name)
+
+DECIMAL - ???
+
+pip install -r req.txt -- установить пакеты из файла, после установки пакетов полезно делать freezee
+pip freeze -> req.txt -- записать состояние пакетов в файл
+
+	a, b = b, a
+
+import random
+random.randint(min, max)

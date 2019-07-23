@@ -8,3 +8,150 @@ python manage.py migrate
 python manage.py runserver
 
 python manage.py startapp polls
+
+from django.urls import reverse
+return HttpResponseRedirect(reverse('about_page'))
+
+from django.urls import re_path
+re_path(r"^about/?$", views.about, name="about"),
+
+{% now "Y-m-d H:i:s" %}
+{% with name="Tom" age=29 %}
+<h2>{{ name }}</h2>
+{% endwith %}
+{# This is a comment #}
+
+
+from django.conf import settings
+settings.BASE_DIR
+
+manage.py createsuperuser
+
+from app.models import Post
+Post.objects.all()
+Post.objects.get(username="name")
+Post.obects.create(author=author1, title="Some Title", text="Some Text")
+Post.objects.filter(username=author1)
+
+python manage.py migrate
+python manage.py makemigrations blog
+python manage.py sqlmigrate blog 0001
+
+python manage.py migrate blog zero -- убить все миграции для приложения blog
+python manage.py migrate blog 0002 -- применить до миграции 0002, если были на 0003 откатить до старой
+									  если на 0001 выполнит новые
+
+python manage.py createsuperuser
+
+admin.py -> 
+admin.site.register(Post) -- просто зарегистрировать сущность для админки
+
+@admin.register(Post):
+class PostAdmin(admin.ModelAdmin):
+	list_display = ('title', 'slug', 'author', 'publish', 'status') -- зарегистрировать и настраивать элемент
+
+user = User.objects.get(username='admin')
+>>> post = Post(title='Another post', slug='another-post', body = 'Post body', author = user)
+>>> post.save()
+
+
+Post.objects.filter(publish__year=2017, author__username='admin')
+Post.objects.filter(publish__year=2017).exclude(title__startswith='Why')
+Post.objects.order_by('title') 
+Post.objects.order_by('-title') -- по убыванию Title
+Post.objects.get(id=1).delete()
+
+exclude -- используеться как аналог != 
+Post.objects.all().exclude(id=1)
+
+Post.objects.filter(id__in=[1])  // использование IN
+
+sudo apt-get install libpq-dev python-dev
+sudo apt-get install postgresql postgresql-contrib
+pip install psycopg2
+
+в Джанго можно создавать свои теги для шаблона
+
+pip install Pillow
+
+pip install social-auth-app-django
+
+sorl-thumbnail
+
+model.choice_set.all() -- набор колекций других моделей связонных с этой через ForeignKey
+mod.choice_set.create(text='some text') -- добавить в набор модель
+
+models.DateTimeField(auto_now=True) #если ипользовать auto_now, auto_now_add то они добавляються автоматически и в форме не выводяться
+
+.annotate(same_tags=Count('tags')) -- времено создать свойство в моделях
+
+{{ content|safe }} -- аналог raw twig
+
+
+django.contrib.auth -- встроенный пакет для работы с авторизацией
+
+from django.contrib.auth.decorators import login_required
+
+from django.contrib.auth import authenticate, login
+user = authenticate(request, username=cd['username'], password=cd['password'])
+login(request, user)
+
+request.user -- доступ к пользователю
+
+from django.conf.urls.static import static
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+static доступна лишь при DEBUG на prodaction так делать нельзя
+
+User.DoesNotExist -- исключение по модели, если не находиться по
+User.objects.get(field=value)
+
+pip install sorl-thumbnail
+
+User.add_to_class(
+	'following', models.ManyToManyField('self', through=Contanct, related_name='followers',
+                                                      symmetrical=False)) -- способо добавить в модель свойство
+                      symmetrical=False -- если запись в одном месте не делать автоматически добавление в другое место
+
+
+django.contrib.contenttypes -- приложение для работы с моделями из разных приложений проекта
+from django.contrib.contenttypes.models import ContentType
+image_type = ContentType.objects.get(app_label='images', model='image')
+image_type.model_class()
+
+select_related() -- жадная загрузка
+actions = actions.select_related('user', 'user__profile')[:10]
+prefetch_related() -- то же самое когда дело касается M:N
+
+pip install redis
+
+
+Временная отладка
+если в view
+	return HttpResponse(text)
+если в другом месте
+	raise ValueError(text)
+
+где text в случае с объектом
+	pprint.pformat(vars(obj))
+в других случаях
+	pprint.pformat(obj)
+
+
+pip install celery
+pip install flower
+pip install braintree
+pip install WeasyPrint
+
+from django.template.loader import render_to_string
+html = render_to_string('orders/order/pdf.html', {'order': order})
+
+python manage.py collectstatic -- переносит статические файлы из приложений в папку проэкта
+
+celery -A myshop worker -l info
+rabbitmq-server
+
+deactivate -- выйти из виртуального окружения
+
+python manage.py courses dumpdata --indent=2 --output=courses/fixtures/subjects.json

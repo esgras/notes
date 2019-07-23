@@ -53,9 +53,13 @@ du -h dir -d 1 	-- вывести размер элементов 1-го уро�
 du -ah dir -- вывести размер со всеми элементами в папке
 
 Создать пользователя
+adduser user_name
+
 sudo useradd -m user1 //вместе с домашним каталогом
 sudo passwd user1
 sudo userdel -r user1 //удалить с домашним каталогом
+
+
 
 whoami -- под каким пользователем
 pwd -- текущий каталог
@@ -64,6 +68,7 @@ su user1 -- войти под другим пользователем
 	
 groups user -- просмотр групп пользователя
 sudo usermod -G webusers user 
+sudo usermod -aG sudo matrix
 sudo adduser user1 group1 -- добавить пользователя к группе	
 
 sudo -i -- войти под рутом (если пользователь в группе sudo) то можно зайти под root
@@ -91,7 +96,7 @@ watch sensors - показывает постоянно меняющиеся з�
 
 zip
 zip arch.zip file.txt  -- добавить файл к архиву
-zip dir_arch.zip dir/  -- запокавать папку
+zip dir_arch.zip dir/  -- запаковать папку
 unzip -l arch.zip      -- получить список файлов архива
 unzip arch.zip -d dir/where/unzip/ -- распокавать в папку
 
@@ -172,7 +177,7 @@ sudo apt-cache search package-name
 
 wget -O filename https://site.name/path/to/file.name
 
-tar -xJf file.tar.xz
+	tar -xJf file.tar.xz
 
 sudo grep -r '$GLOBALS' /home/vayn/hosts/back_domovoi/ --color +
 
@@ -189,6 +194,10 @@ zip -R upload.zip upload/
 
 tar -zcvf upload.tar.gz upload/
 
+tar xvzf file.tar.gz -- распаковать
+
+tar czf workspace.tar.gz -C /path/to/workspace . -- упаковать без верхней папки
+
 
 mysqldump -u dark -pHr%hbMNsne dark > danceark.sql
 
@@ -204,7 +213,7 @@ https://vaynn@bitbucket.org/vaynn/danceark.git
 #если нужно что бы выполнился скрипт и воздействовал в терминал
 exec bash
 
-и что бы не нужно было прописывать через . находясь в папке делаем симлинк в /usr/bin/local
+и что бы не нужно было прописывать через . находясь в папке делаем симлинк в /usr/local/bin
 
 
 passwd worker -- поменять пароль
@@ -221,3 +230,40 @@ $1 -- аргумент в терминале
 
 #!/bin/bash
 php test.php $1 -- пример вызова пароля
+
+
+mysqldump -u root -pasdf danceark > /home/vayn/backups/`date +"%Y"-"%m"-"%d"_"%H":"%M"`_dump.sql
+
+ln -s /home/user/programs/script.sh /usr/bin/local/script
+
+curl -O -J -L -u esgras:lpeenw90 https://github.com/esgras/rel_repo/archive/v1.0.3.zip
+
+df -h
+
+* * * * * mysqldump -u root -pasdf 28 > /home/vayn/backups/28_dney/28_`date +\%y-\%m-\%d_\%H:\%M`.sql
+
+ngrok http -host-header=rewrite mysite.dev:80
+
+
+curl -D- http://example.com | less -- посмотреть заголовки сервера
+
+tar -zxvf archive.tgz
+
+
+
+sudo apt install letsencrypt -y
+certbot certonly --rsa-key-size 2048 --standalone --agree-tos --no-eff-email --email hakaselabs@gmail.com -d matrix.hakase-labs.io
+
+
+sudo netstat -ltnp |grep 8000 -- увидеть процесс на порте`
+
+
+ sudo puttygen ppkkey.ppk -O private-openssh -o pemkey.pem
+
+
+nmap -p 8008 116.203.135.51
+
+PORT     STATE  SERVICE
+8008/tcp closed http
+
+locate file
