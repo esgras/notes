@@ -360,6 +360,8 @@ Cls.count -- статический элемент
 Констант нету
 
 isinstance(obj, Class)
+x = 100
+isinstance(x, int) -- True
 
 super() -- обратиться к родителю из методов наследника
 

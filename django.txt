@@ -4,6 +4,26 @@ source env_dir/bin/activate
 pip install Django
 django-admin startproject website
 
+
+virtualenvwrapper -- удобная надстройка над virtualenv
+pip3 install virtualenvwrapper
+
+which virtualenvwrapper.sh
+/home/vayn/.local/bin/virtualenvwrapper.sh
+nano ~/.bashrc
+export WORKON_HOME=$HOME/.virtenvs
+source /home/vayn/.local/bin/virtualenvwrapper.sh
+
+source ~/.bashrc
+
+mkvirtualenv virtualenv_name
+deactivate
+rmvirtualenv ENVNAME
+cpvirtualenv ENVSOURCE ENVDEST
+allvirtualenv
+workon ENVNAME -- использовать env
+
+
 python manage.py migrate
 python manage.py runserver
 

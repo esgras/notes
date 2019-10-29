@@ -1,0 +1,26 @@
+ReactDOM.render(
+        <Cloak/>,
+        document.getElementById('root')
+    );
+
+tick() {
+    this.setState({       //Состояние должно меняться только так
+        date: new Date()
+    });
+}
+
+
+ constructor(props) {
+    super(props);
+    this.state = {date: new Date()}; // так можно только в конструкторе
+}
+
+render() -- вызывает цепочку lifecycle events
+
+Для того что бы в обработчике компонента привязать this нужно в конструкторе
+
+constructor(props) {
+    super(props);
+    this.clickHanlder = this.clickHandler.bind(this);
+/////////..........
+}

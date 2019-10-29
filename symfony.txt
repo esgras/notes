@@ -1748,3 +1748,18 @@ $this->forward('AppBundle\Controller\PartialController::progressBarAction', [
 $response = new Response('Drop cookie');
 $response->headers->clearCookie(ConstantHelper::DISCOUNT_COOKIE_KEY); -- удалить куку
 return $response;
+
+
+friendsofsymfony/rest-bundle
+sensio/framework-extra-bundle
+jms/serializer-bundle
+symfony/validator
+symfony/form
+symfony/orm-pack
+
+
+The service "fos_user.resetting.controller" has a dependency on a non-existent service "templating".  
+
+packages/framework.yaml
+templating:
+        engines: ['twig', 'php']

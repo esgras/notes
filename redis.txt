@@ -3,5 +3,17 @@ GET var
 EXPIRE var 100 -- задать время жизни var в 100 секунд
 EXISTS var
 DEL var
+dbsize
+select 1 -- выбрать бд
+
+redis-server -- поднять сервер
+redis-cli -- зайти в клиент
 
 сперва поднимается сервер, комманды вверху указаны для клиента
+
+$redis = new Redis();
+$redis->connect('localhost', 6379);
+$redis->get('users:leto')
+$redis->set('key', 'value');
+$redis->del('key');
+$redis->exists('key');

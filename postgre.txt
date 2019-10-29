@@ -39,3 +39,9 @@ psql danceark < файл_дампа
 REVOKE ALL ON DATABASE postgres FROM test_user;
 REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM test_user;
 drop user test_user;
+
+Проблемы с входом:
+/etc/postgresql/10/main/pg_hba.conf
+local   all             postgres                                peer
+После этого должен быть вход
+sudo -u postgres psql

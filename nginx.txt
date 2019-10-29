@@ -1,0 +1,50 @@
+Отличия от Apache :
+  по умолчанию отдает только статику для этого и нужен php-fpm что бы кидать запросы на php
+  в нем несколько процессов - по количеству ядер, в каждом процессе есть worker_connections -- объект для обработки запроса, работает ассинхроно
+  в конфигурации к домену - очень много играет location
+
+Простейшая конфигурация
+server {
+        server_name blank.test;
+        root /home/vayn/hosts/blank.test/project;
+
+        index index.html;
+
+        location / {
+                try_files $uri $uri/ =404;
+        }
+
+        #Включить PHP
+        location ~ \.php$ {
+                fastcgi_split_path_info ^(.+\.php)(/.+)$;
+                include fastcgi_params;
+                fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+                fastcgi_param DOCUMENT_ROOT $document_root;
+                fastcgi_pass unix:/var/run/php/php7.1-fpm.sock;
+        }
+
+
+        # Включить сжатие gzip
+        gzip on;
+        gzip_disable "msie6";
+        gzip_comp_level 7;
+        gzip_types text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript application/javascript;
+
+        error_log /home/vayn/hosts/blank.test/error.log;
+        access_log /home/vayn/hosts/blank.test/access.log;
+}
+
+Можно настраивать доступы от разных пользователей
+для этого в 
+/etc/php/7.1/fpm/pool.d -- создается новый файл пула
+и в нем:
+1) поменять пользователя [www]
+2) поменять пользователя и группу
+	user = new_user
+	group = new_user_group
+3) прописать адресс сокета
+	/var/run/php/php7.1-fpm.new_user.sock
+4) перезагрузить sudo service php7.1-fpm restart
+5) изменить конфигурацию хоста nginx
+	fastcgi_pass unix:/var/run/php/php7.1-fpm.new_user.sock;
+6) перезагрузить nginx

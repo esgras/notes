@@ -35,3 +35,13 @@ sudo nano /etc/mysql/my.cnf
 [mysqld]  
 sql_mode = "STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
 sudo service mysql restart
+
+DELIMITER $$
+CREATE PROCEDURE get_test()
+   SELECT * FROM test;
+BEGIN
+END$$
+DELIMITER ;
+
+call get_test();
+DROP PROCEDURE proc_name;

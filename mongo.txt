@@ -1,0 +1,71 @@
+use bd_name -- выбирает (если нет то создает и выбирает) бд
+show collections -- показывает коллекции из бд
+show dbs -- show databases
+help
+db -- показать текущую бд
+db.stats() -- статистика по текущей дб
+db.collection.find() -- аналог SELECT
+db.users.find().prety() -- вывести красивее
+db.users.insert() -- вставить один или несколько документов
+db.users.insertMany([{name: "Tom"}, {name: "John"}])
+db.users.find({name: "Tom"}) -- SELECT * FROM users WHERE name = "Tom"
+db.users.find({name: "Tom", age: 32})
+db.users.find({languages: ["english", "german"]})
+db.users.find({name: "Tom"}, {name: 0}) -- вывести всех Tom, при этом в выборке не должно быть name, если name: 1 - то должны быть
+db.users.find({}, {age: true, _id: false}) -- все пользователи только поле age, _id -- принудительно прячем
+db.users.find({"company.name": "microsoft"}) -- поиск по вложенность, у поля company есть свойство name
+fn = function() { return this.name == "Tom"; }
+db.users.find(fn) -- здесь использовали JavaScript
+db.users.find({name:/T\w+/i}) -- можно использовать регулярку
+db.users.find().sort({name: 1}).skip(3).limit(3) -- SELECT * FROM users ORDER BY name ASC LIMIT 3 OFFSET 3 ;
+var cursor = db.users.find(); null; -- создание курсора, хранилища выборки | null что бы не печатать
+cursor.forEach(function(obj) { print(obj.name); }); -- пример использования курсора
+db.users.count()
+db.users.distinct("name") -- получить уникальные name из коллекции
+db.users.group ({key: {name : true}, initial: {total : 0}, reduce : function (curr, res){res.total += 1}}) -- GROUP BY, группирует по name
+		initial: {total: 0} -- задает начальное значения для метода
+		reduce : function (curr, res){res.total += 1}} -- здесь подсчитается количество
+$eq (равно)
+$ne (не равно)
+$gt (больше чем)
+$lt (меньше чем)
+$gte (больше или равно)
+$lte (меньше или равно)
+$in определяет массив значений, одно из которых должно иметь поле документа
+$nin определяет массив значений, которые не должно иметь поле документа
+
+db.users.find ({age: {$lt : 30}})
+
+$or: соединяет два условия, и документ должен соответствовать одному из этих условий
+$and: соединяет два условия, и документ должен соответствовать обоим условиям
+$not: документ должен НЕ соответствовать условию
+$nor: соединяет два условия, и документ должен НЕ соответстовать обоим условиям
+
+db.users.find ({$or : [{name: "Tom"}, {age: 22}]})
+
+db.users.save({name: "Eugene", age : 29, languages: ["english", "german", "spanish"]})
+
+db.users.update({name : "Tom"}, {name: "Tom", age : 25}, {upsert: true})
+db.getCollectionNames();
+db.unicors.remove()
+db.unicors.drop()
+db.unicorns.find({vampires: {$exists: false}})
+db.unicorns.find({gender: 'f', $or: [{loves: 'apple'}, {loves: 'orange'}, {weight: {$lt: 500}}]}) -- все f которые или любят яблоки, или апельсины или весом меньше 500
+
+db.unicorns.update({name: 'Roooooodles'}, {$set: {weight: 590}}) -- обновит документ установив поля
+db.inicorns.update({name: 'Roooooodles'}, {weight: 500}) -- вместо 1-го документа вставит второй документ
+db.unicorns.update({name: 'Pilot'}, {$inc: {vampires: -2}})
+db.unicorns.update({name: 'Aurora'}, {$push: {loves: 'sugar'}})
+db.hits.update({page: 'unicorns'}, {$inc: {hits: 1}}, true); -- сделать вставку на обновлении, разрешается так как последний параметр true
+
+db.unicorns.find({vampires: {$gt: 30}}, {name: 1, weight: 1}).sort({weight: -1}).limit(5).skip(2) -- выбрать name, weight у единорогов которые убили более 30 вампиров, отсортировать по весу в обратном порядке LIMIT 5 OFFSET 2
+В mongoDb нет JOIN вместо этого там работают с доп запросом
+db.employees.insert({_id: ObjectId("4d85c7039ab0fd70a117d733"), name: 'Siona', manager: [ObjectId("4d85c7039ab0fd70a117d730"), ObjectId("4d85c7039ab0fd70a117d732")] })
+
+db.employees.find({manager: ObjectId("4d85c7039ab0fd70a117d730")})
+db.employees.insert({_id: ObjectId("4d85c7039ab0fd70a117d734"), name: 'Ghanima', family: {mother: 'Chani', father: 'Paul', brother: ObjectId("4d85c7039ab0fd70a117d730")}}) -- вложенный документ
+
+db.employees.find({'family.mother': 'Chani'}) -- поиск по вложенному документу
+db.users.createIndex({"name" : 1}, {"unique" : true})
+db.post.getIndexes()
+db.users.dropIndex("name_1")
